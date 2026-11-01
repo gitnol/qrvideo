@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "python": "3.13.16",
+    "numpy": "2.5.4",
+    "cpu": "Intel64 Family 6 Model 198 Stepping 2, GenuineIntel",
+    "n": 300,
+    "date": "2026-10-26 22:05"
+  },
+  "ms_per_qr": {
+    "Original upstream (qrcodegen 1.8.0)": 52.868889999808744,
+    "Thesis qrcodegenmod 2019": 3.314509333577007,
+    "qrcodegenmod 2026 ohne Numba": 0.5981110001448542,
+    "qrcodegenmod 2026 mit Numba": 0.25044733309186995
+  }
+}

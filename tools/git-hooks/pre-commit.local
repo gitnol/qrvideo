@@ -1,0 +1,32 @@
+#!/bin/sh
+# Quality Gates vor jedem Commit (docs/CONVENTIONS.md §9), seit I25 mit Schichtregel. Jeder Befehl wird einzeln
+# auf seinen Exit-Code geprueft - keine Pipes, damit kein Gate-Fehler verloren geht (LESSONS_LEARNED L4).
+# Die venv liegt ausserhalb des NextCloud-Ordners (UV_PROJECT_ENVIRONMENT, docs/operations/SETUP.md).
+
+root=$(git rev-parse --show-toplevel) || exit 1
+cd "$root" || exit 1
+if [ -z "$UV_PROJECT_ENVIRONMENT" ] && [ -n "$LOCALAPPDATA" ]; then
+    UV_PROJECT_ENVIRONMENT="$LOCALAPPDATA/venvs/revival_2026"
+    export UV_PROJECT_ENVIRONMENT
+fi
+
+gate() {
+    name=$1
+    shift
+    log=$(mktemp) || exit 1
+    if ! "$@" >"$log" 2>&1; then
+        echo "ROT: $name" >&2
+        tail -n 25 "$log" >&2
+        rm -f "$log"
+        exit 1
+    fi
+    rm -f "$log"
+    echo "gruen: $name" >&2
+}
+
+gate "Gate 1 ruff check" uv run ruff check .
+gate "Gate 2 ruff format" uv run ruff format --check .
+gate "Gate 3 mypy" uv run mypy src tests
+gate "Gate 4 pytest (Unit)" uv run pytest -q -m "not slow and not integration"
+gate "Gate 5 Schichtregel (import-linter)" uv run lint-imports
+exit 0

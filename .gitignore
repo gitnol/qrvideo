@@ -1,0 +1,57 @@
+# --- Python / uv ---
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+/dist/
+/build/
+*.egg-info/
+/mutants/
+.hypothesis/
+*.db
+*.log
+
+# --- Secrets (eng gefasst: Endungen und exakte Namen) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.secret
+/client_secrets.json
+client_secrets.json
+*-oauth2.json
+
+# --- PoC-Arbeitsordner und Artefakte (Klartext/verschlüsselte Nutzdaten, Videos) ---
+files_outgoing_available_for_encryption/
+files_outgoing_already_encrypted/
+files_incoming_encrypted/
+files_incoming_encrypted_analyzed/
+files_incoming_decrypted/
+files_outgoing_video_encrypted/
+files_announcement_qrcode_from_server/
+files_response_qrcode_from_client/
+*.mp4
+*.gpg
+*.asc
+
+# --- Lokale Binaries / Benchmark-Ausgaben ---
+/tools/bin/
+/bench/results/
+
+# --- Potenziell öffentliches Repo (CONVENTIONS_COMMON.md 3.1) ---
+/docs/local/
+/.internal-terms
+
+# --- Claude Code: nur settings.json versionieren ---
+/.claude/*
+!/.claude/settings.json
+
+# --- Lokale Live-Testdaten (Videos, Zufallsnutzlast) ---
+/live/
