@@ -12,8 +12,21 @@ Dateien mit GnuPG verschlüsseln, als Video aus QR-Codes kodieren, über YouTube
 | Bedienungsanleitung | `docs/BEDIENUNGSANLEITUNG.md` |
 | Architektur, Entscheidungen (ADR), Bedrohungsmodell | `docs/architecture/`, `docs/security/` |
 
-`qrcodegenmod` ist ein Fork von [nayuki/QR-Code-generator](https://github.com/nayuki/QR-Code-generator) (MIT),
-Basis-Commit `6e088f7` vom 2019-09-13.
+## Dank an Project Nayuki
+
+Herzstück dieses Projekts ist `qrcodegenmod`, ein Fork der hervorragenden Bibliothek
+[**QR Code generator library**](https://github.com/nayuki/QR-Code-generator) von
+[Project Nayuki](https://www.nayuki.io/page/qr-code-generator-library) (MIT-Lizenz), Basis-Commit
+[`6e088f7`](https://github.com/nayuki/QR-Code-generator/commit/6e088f7) vom 2019-09-13.
+
+Nayukis Bibliothek ist ein Vorbild dafür, wie man einen Standard umsetzt: vollständig nach ISO/IEC 18004, in
+mehreren Sprachen mit identischem Verhalten, ohne Abhängigkeiten und so klar geschrieben, dass sich jeder Schritt
+(Segmente, Reed-Solomon, Masken, Strafpunkte) direkt nachvollziehen lässt. Genau diese Lesbarkeit hat die Thesis
+2019 erst möglich gemacht – auf ihrem sauberen Fundament ließen sich die Optimierungen gezielt einbauen. Auch die
+Modernisierung 2026 stützt sich auf sie: Die offizielle Version `qrcodegen` 1.8.0 dient in den Tests als Orakel,
+`qrcodegenmod` erzeugt für jede Version, ECC-Stufe und Maske Bit für Bit dieselben QR-Codes.
+
+Vielen Dank an Nayuki für diese großartige Arbeit und dafür, sie frei zur Verfügung zu stellen.
 
 Die Entwicklung lief nach einem internen Doku-Prozess (Arbeitsstand, Reflexionen, Changelog). Diese
 Projektprotokolle sind nicht Teil des Repos; Verweise in `docs/` auf solche Dateien beziehen sich darauf.
