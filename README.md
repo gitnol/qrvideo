@@ -3,14 +3,17 @@
 Wiederbelebung einer Bachelor-Thesis von 2019 zum Datenaustausch über Videos aus QR-Codes:
 Dateien mit GnuPG verschlüsseln, als Video aus QR-Codes kodieren, über YouTube übertragen und zurückgewinnen.
 
+**Erste Schritte:** Installation und Bedienung Schritt für Schritt, mit Bildern, in der
+[Bedienungsanleitung](docs/BEDIENUNGSANLEITUNG.md).
+
 | Teil | Ort |
 |---|---|
 | Moderne Bibliothek `qrcodegenmod` (Python ≥ 3.11) | `src/qrcodegenmod/` |
 | Übertragung `qrvideo` (Befehl `qrvideo`) | `src/qrvideo/` |
 | Bedienoberfläche (Befehl `qrvideo-gui`) | `src/qrvideo_gui/` |
 | Thesis-Stand 2019 (unverändert) | `legacy/` |
-| Bedienungsanleitung | `docs/BEDIENUNGSANLEITUNG.md` |
-| Architektur, Entscheidungen (ADR), Bedrohungsmodell | `docs/architecture/`, `docs/security/` |
+| Bedienungsanleitung | [`docs/BEDIENUNGSANLEITUNG.md`](docs/BEDIENUNGSANLEITUNG.md) |
+| Architektur, Entscheidungen (ADR), Bedrohungsmodell | [`docs/architecture/`](docs/architecture/), [`docs/security/`](docs/security/THREAT_MODEL.md) |
 
 ## Dank an Project Nayuki
 
@@ -52,8 +55,8 @@ img = qr.to_image(scale=2, border=2)  # uint8, dunkel = 0, hell = 255
 ## Bedienoberfläche (`qrvideo-gui`)
 
 Für alle, die keine Kommandozeile nutzen möchten: Fenster mit den Reitern Senden, Empfangen, Handshake und
-Schlüssel. Schritt für Schritt, auch für die Einrichtung von GnuPG: `docs/BEDIENUNGSANLEITUNG.md`
-(technische Beschreibung: `docs/features/GUI.md`).
+Schlüssel. Schritt für Schritt, auch für die Einrichtung von GnuPG:
+[Bedienungsanleitung](docs/BEDIENUNGSANLEITUNG.md) (technische Beschreibung: [`docs/features/GUI.md`](docs/features/GUI.md)).
 
 ```powershell
 uv run qrvideo-gui
