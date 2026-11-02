@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/crypto-GnuPG-0b1f3a" alt="GnuPG">
 </p>
 
-<p align="center"><a href="README.md">Deutsch</a> · <a href="README.en.md">English</a></p>
+<p align="center"><a href="README.de.md">Deutsch</a> · <a href="README.md">English</a></p>
 
 Recuperación de una tesis de grado de 2019: los archivos se cifran y firman con GnuPG, se codifican como un
 vídeo de códigos QR, se transfieren por YouTube o por una carpeta compartida y el destinatario los recupera.

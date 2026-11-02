@@ -204,7 +204,7 @@ installed, point the environment variable `IMAGEIO_FFMPEG_EXE` to it.
 - **Closing the window during an operation** asks first and then cancels it.
 - **Thesis videos from 2019** can only be read on the command line (`decode --legacy`, see appendix).
 - **Languages:** the command line also speaks English, German and Spanish (`--lang`, or the environment variable
-  `QRVIDEO_LANG`). The [README](../README.en.md#languages) explains how to add a language.
+  `QRVIDEO_LANG`). The [README](../README.md#languages) explains how to add a language.
 
 ---
 

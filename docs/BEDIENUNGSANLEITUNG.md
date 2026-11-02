@@ -204,7 +204,7 @@ installiert hat, kann es über die Umgebungsvariable `IMAGEIO_FFMPEG_EXE` angebe
 - **Schließen während eines Vorgangs** fragt nach und bricht ihn ab.
 - **Thesis-Videos von 2019** liest nur die Kommandozeile (`decode --legacy`, siehe Anhang).
 - **Sprachen:** Auch die Kommandozeile spricht Deutsch, Englisch und Spanisch (`--lang` oder die
-  Umgebungsvariable `QRVIDEO_LANG`). Wie man eine Sprache ergänzt, steht im [README](../README.md#sprachen).
+  Umgebungsvariable `QRVIDEO_LANG`). Wie man eine Sprache ergänzt, steht im [README](../README.de.md#sprachen).
 
 ---
 
