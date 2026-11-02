@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any, Protocol
 
 from . import youtube
+from .i18n import N_, _
 from .paths import safe_filename
 
 CHANNEL_NAMES = ("youtube", "folder")
@@ -74,7 +75,7 @@ class YouTubeChannel:
 
     def publish(self, video: Path, title: str) -> Published:
         if self._client_secrets is None:
-            raise ValueError("Fuer den Upload zu YouTube fehlt --client-secrets (OAuth-Client, Google Cloud)")
+            raise ValueError(_("Uploading to YouTube needs --client-secrets (OAuth client, Google Cloud)"))
         uploaded = youtube.upload(video, title, self._client_secrets)
         return Published(uploaded.video_id, _visibility_notice(uploaded))
 
@@ -96,12 +97,12 @@ class FolderChannel:
     def fetch(self, ref: str, target_dir: Path) -> Path:
         source = self.root / self.parse_ref(ref)
         if not source.is_file():
-            raise FileNotFoundError(f"Nicht im Kanalordner: {source}")
+            raise FileNotFoundError(_("Not in the channel folder: {path}").format(path=source))
         target = target_dir / source.name
         if target.exists() and target.resolve() == source.resolve():
             return target
         if target.exists():
-            raise FileExistsError(f"{target} existiert bereits")
+            raise FileExistsError(_("{path} already exists").format(path=target))
         target_dir.mkdir(parents=True, exist_ok=True)
         _copy_atomic(source, target)
         return target
@@ -109,13 +110,13 @@ class FolderChannel:
     def publish(self, video: Path, title: str) -> Published:
         """Der Titel bleibt unbenutzt: ein Ordner kennt nur Dateinamen, und die sind zufaellig."""
         if not self.root.is_dir():
-            raise ValueError(f"Kanal-Ordner fehlt: {self.root}")
-        for _ in range(NAME_TRIES):  # begrenzt: nie endlos, auch wenn der Ordner sonderbar antwortet
+            raise ValueError(_("Channel folder missing: {path}").format(path=self.root))
+        for _attempt in range(NAME_TRIES):  # begrenzt: nie endlos, auch wenn der Ordner sonderbar antwortet
             target = self.root / f"qrvideo-{secrets.token_hex(4)}.mp4"
             if not target.exists():
                 _copy_atomic(video, target)
                 return Published(target.name)
-        raise FileExistsError(f"Kein freier Name im Kanal-Ordner {self.root}")
+        raise FileExistsError(_("No free name in the channel folder {path}").format(path=self.root))
 
     def display(self, ref: str) -> str:
         return ref
@@ -125,14 +126,16 @@ def _visibility_notice(uploaded: youtube.Uploaded) -> str | None:
     """Nur wenn YouTube sicher anders entschieden hat; ohne Status in der Antwort kein geratener Hinweis."""
     if uploaded.privacy in (None, youtube.WANTED_PRIVACY):
         return None
-    return (
-        f'YouTube hat das Video als "{_PRIVACY_TEXT.get(uploaded.privacy, uploaded.privacy)}" gespeichert '
-        "(ueblich bei nicht verifizierten API-Projekten). Freigeben in YouTube Studio oder abholen mit "
-        "einem berechtigten Konto: qrvideo download <ID> --cookies-from-browser <Browser>"
+    text = _(
+        'YouTube saved the video as "{privacy}" (usual for unverified API projects). Release it in '
+        "YouTube Studio or fetch it with an authorised account: "
+        "qrvideo download <ID> --cookies-from-browser <browser>"
     )
+    privacy = uploaded.privacy
+    return text.format(privacy=_(_PRIVACY_TEXT[privacy]) if privacy in _PRIVACY_TEXT else privacy)
 
 
-_PRIVACY_TEXT = {"private": "privat", "public": "oeffentlich"}
+_PRIVACY_TEXT = {"private": N_("private"), "public": N_("public")}
 
 
 def _copy_atomic(source: Path, target: Path) -> None:
@@ -156,18 +159,19 @@ def make_channel(
     if name == "youtube":
         return YouTubeChannel(client_secrets, cookies_from_browser=cookies_from_browser)
     if cookies_from_browser:
-        raise ValueError("--cookies-from-browser gilt nur fuer YouTube")
+        raise ValueError(_("--cookies-from-browser only applies to YouTube"))
     if name == "folder":
         if folder is None:
-            raise ValueError("Der Ordner-Kanal braucht --folder")
+            raise ValueError(_("The folder channel needs --folder"))
         return FolderChannel(folder)
-    raise ValueError(f"Unbekannter Kanal {name!r} (erlaubt: {', '.join(CHANNEL_NAMES)})")
+    text = _("Unknown channel {name!r} (allowed: {names})")
+    raise ValueError(text.format(name=name, names=", ".join(CHANNEL_NAMES)))
 
 
 def _folder_name(text: str) -> str:
     name = text.strip()
     if not name or safe_filename(name) != name:
-        raise ValueError(f"Kein Dateiname im Kanalordner: {text!r}")
+        raise ValueError(_("Not a file name in the channel folder: {text!r}").format(text=text))
     return name
 
 
@@ -181,7 +185,8 @@ def parse_channel_ref(text: str) -> tuple[str, str]:
     parser = _REF_PARSERS.get(name) if sep else None
     if parser is None:
         names = ", ".join(CHANNEL_NAMES)
-        raise ValueError(f"Kein Verweis der Form <Kanal>:<Verweis> (Kanal: {names}): {text!r}")
+        message = _("Not a reference of the form <channel>:<reference> (channel: {names}): {text!r}")
+        raise ValueError(message.format(names=names, text=text))
     return name, parser(ref)
 
 

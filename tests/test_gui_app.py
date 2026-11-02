@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 from gui_fakes import ALICE, BOB, NAMELESS, FakeCrypto, pump
 
-from qrvideo.crypto import GpgError
+from qrvideo.crypto import GpgError, GpgNotFoundError
 from qrvideo_gui.keys import KeyService, default_signer, format_fingerprint
 
 
@@ -44,7 +44,7 @@ def test_crypto_is_created_once_and_errors_propagate() -> None:
     assert calls == [1]
 
     def broken() -> FakeCrypto:
-        raise GpgError("gpg nicht gefunden: GnuPG installieren oder QRVIDEO_GPG setzen")
+        raise GpgNotFoundError("gpg nicht gefunden: GnuPG installieren oder QRVIDEO_GPG setzen")
 
     with pytest.raises(GpgError):
         KeyService(broken).rows()
@@ -65,7 +65,7 @@ def test_main_window_shows_friendly_error_without_gnupg(root: tk.Toplevel) -> No
     from qrvideo_gui.app import MainWindow
 
     def broken() -> FakeCrypto:
-        raise GpgError("gpg nicht gefunden: GnuPG installieren oder QRVIDEO_GPG setzen")
+        raise GpgNotFoundError("gpg nicht gefunden: GnuPG installieren oder QRVIDEO_GPG setzen")
 
     window = MainWindow(root, KeyService(broken))
     pump(root, lambda: "Gpg4win" in window.status.get())
@@ -156,3 +156,16 @@ def test_every_tab_fits_at_minimum_window_size(scaled: tk.Toplevel) -> None:
             name = f"{tab.winfo_class()}: {widget.cget('text') or widget}"
             assert widget.winfo_width() >= widget.winfo_reqwidth(), f"abgeschnitten: {name}"
             assert widget.winfo_rooty() + widget.winfo_height() <= bottom, f"unten abgeschnitten: {name}"
+
+
+def test_fingerprint_column_fits_the_widest_hex_digits(root: tk.Toplevel) -> None:
+    """Spalte nach der breitesten Hex-Ziffer: „0“ ist schmaler als „D“, sonst abgeschnitten (I34)."""
+    from tkinter import font as tkfont
+
+    from qrvideo_gui.app import MainWindow
+
+    window = MainWindow(root, KeyService(lambda: FakeCrypto([ALICE])))
+    measure = tkfont.nametofont("TkDefaultFont").measure
+    widest = max("0123456789ABCDEF", key=measure)
+    needed = measure(format_fingerprint(widest * 40))
+    assert int(window.keys_tab.table.column("fingerprint", "width")) >= needed

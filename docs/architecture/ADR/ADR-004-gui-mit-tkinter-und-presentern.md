@@ -31,7 +31,7 @@ Model-View-Presenter:
 * **Hintergrund-Jobs** (`jobs.py`): ein Thread je Vorgang, Fortschritt und Ergebnis über eine `queue.Queue`, die das
   Tk-Fenster per `after()` abholt (Tk ist nicht threadsicher). Abbrechen setzt ein `threading.Event`; die zählenden
   Wrapper um den Frame-Generator (Senden) bzw. den Frame-Leser (Empfangen) werfen beim nächsten Frame `Cancelled`.
-* **Fehlertexte** (`errors.py`): Ausnahmen werden in verständliche deutsche Meldungen übersetzt; Tracebacks gehen
+* **Fehlertexte** (`errors.py`): Ausnahmen werden in verständliche deutsche Meldungen übersetzt (seit ADR-006 in der gewählten Sprache); Tracebacks gehen
   nur ins Log.
 * **Views** (`*_view.py`, `app.py`): nur Widgets und Verdrahtung.
 

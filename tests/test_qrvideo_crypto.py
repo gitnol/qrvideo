@@ -12,7 +12,15 @@ import gnupg
 import pytest
 
 from qrvideo.cli import main
-from qrvideo.crypto import Crypto, GpgError, UntrustedSignatureError, find_gpg_binary
+from qrvideo.crypto import (
+    Crypto,
+    DecryptError,
+    EncryptError,
+    GpgError,
+    RecipientsError,
+    UntrustedSignatureError,
+    find_gpg_binary,
+)
 
 pytestmark = pytest.mark.integration
 
@@ -78,10 +86,19 @@ def test_encrypt_decrypt_roundtrip(keyring: Keyring) -> None:
 
 
 def test_untrusted_recipient_is_refused(keyring: Keyring) -> None:
-    with pytest.raises(GpgError, match="nicht vertraut"):
+    with pytest.raises(RecipientsError):
         keyring.crypto.encrypt(b"x", [keyring.mallory], keyring.alice)
-    with pytest.raises(GpgError, match="keine angegeben"):
+    with pytest.raises(RecipientsError):
         keyring.crypto.encrypt(b"x", [], keyring.alice)
+
+
+def test_failed_gpg_encryption_is_an_encrypt_error(keyring: Keyring, monkeypatch: pytest.MonkeyPatch) -> None:
+    # gpg zum Scheitern zu bringen ist unzuverlaessig (fehlt der Signaturschluessel, nimmt gpg einen anderen,
+    # KNOWN_ISSUES); der GUI-Hinweis haengt nur an der Klasse
+    failed = type("Result", (), {"ok": False, "status": "signing failed", "data": b""})()
+    monkeypatch.setattr(keyring.crypto._gpg, "encrypt", lambda *args, **kwargs: failed)
+    with pytest.raises(EncryptError, match="signing failed"):
+        keyring.crypto.encrypt(b"x", [keyring.bob], keyring.alice)
 
 
 def test_untrusted_or_missing_signature_is_refused(keyring: Keyring) -> None:
@@ -93,9 +110,9 @@ def test_untrusted_or_missing_signature_is_refused(keyring: Keyring) -> None:
     with pytest.raises(UntrustedSignatureError, match="nicht voll vertraut"):
         keyring.crypto.decrypt(by_mallory)
     unsigned = raw.encrypt(b"x", [keyring.bob], armor=False).data
-    with pytest.raises(UntrustedSignatureError, match="nicht gueltig signiert"):
+    with pytest.raises(UntrustedSignatureError, match="nicht gültig signiert"):
         keyring.crypto.decrypt(unsigned)
-    with pytest.raises(GpgError, match="Entschluesseln"):
+    with pytest.raises(DecryptError):
         keyring.crypto.decrypt(b"kein PGP")
 
 

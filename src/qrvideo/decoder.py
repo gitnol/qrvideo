@@ -17,6 +17,7 @@ from qrcodegenmod.reader import QrDecodeError, decode_modules
 
 from .container import ContainerError, FrameHeader, assemble, group_layout, unpack_symbol
 from .erasure import recover
+from .i18n import _
 from .layout import THESIS_LAYOUT, FrameLayout
 from .videoio import read_video
 
@@ -71,7 +72,7 @@ def _read_header(data: bytes | None, index: int, report: DecodeReport) -> FrameH
 def _v2_chunks(items: list[_Item], per_frame: int) -> dict[int, bytes]:
     """v2: Position aus dem Frame-Index im Kopf; Daten aus Frames ohne lesbaren Kopf sind verloren."""
     chunks: dict[int, bytes] = {}
-    for _, slot, header, data in items:
+    for _frame, slot, header, data in items:
         if header is not None:
             chunks.setdefault(header.frame_index * per_frame + slot - 1, data)
     return chunks
@@ -80,7 +81,7 @@ def _v2_chunks(items: list[_Item], per_frame: int) -> dict[int, bytes]:
 def _v3_chunks(header: FrameHeader, items: list[_Item], report: DecodeReport) -> dict[int, bytes]:
     """v3: Position aus dem Symbolindex im Daten-QR; CRC-Fehler werden zu Ausloeschungen."""
     symbols: dict[int, bytes] = {}
-    for frame, slot, _, data in items:
+    for frame, slot, _header, data in items:
         try:
             index, chunk = unpack_symbol(data)
         except ContainerError as exc:
@@ -100,7 +101,7 @@ def _recover_groups(header: FrameHeader, symbols: dict[int, bytes]) -> dict[int,
             try:
                 restored = recover({p: s.ljust(size, b"\0") for p, s in group.items()}, k, m)
             except ContainerError as exc:
-                raise ContainerError(f"Gruppe {number}: {exc}") from exc
+                raise ContainerError(_("Group {number}: {error}").format(number=number, error=exc)) from exc
             group = dict(enumerate(restored))
         chunks.update({first + p: group[p] for p in range(k) if p in group})
     last = max(1, -(-header.payload_length // size)) - 1
@@ -134,7 +135,7 @@ def decode_frames(
         header = header or current
         items += [(index, slot, current, data) for slot, data in enumerate(slots[1:], 1) if data is not None]
     if header is None:
-        raise ContainerError("Kein lesbarer Kopf (v2/v3) im Video")
+        raise ContainerError(_("No readable header (v2/v3) in the video"))
     if header.version == 3:
         return assemble(header, _v3_chunks(header, items, report)), report
     return assemble(header, _v2_chunks(items, layout.slots - 1)), report
@@ -152,9 +153,8 @@ def decode_frames_legacy(
         parts.extend(data for data in slots[1:] if data is not None)
     if report.failures:
         first = report.failures[0]
-        raise ContainerError(
-            f"{len(report.failures)} QR-Codes unlesbar, erster: Frame {first[0]}, Slot {first[1]}"
-        )
+        text = _("{count} QR codes unreadable, first: frame {frame}, slot {slot}")
+        raise ContainerError(text.format(count=len(report.failures), frame=first[0], slot=first[1]))
     return b"".join(parts), report
 
 

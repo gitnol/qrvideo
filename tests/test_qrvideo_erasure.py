@@ -86,7 +86,7 @@ def test_more_than_m_erasures_is_a_clear_error() -> None:
     data = symbols(rng, 10, 8)
     everything = dict(enumerate([*data, *encode_parity(data, 3)]))
     survivors = {p: s for p, s in everything.items() if p not in (0, 1, 2, 12)}  # 4 > m = 3 Ausloeschungen
-    with pytest.raises(ContainerError, match="3 Datensymbole fehlen, nur 2 Paritaetssymbole"):
+    with pytest.raises(ContainerError, match="3 Datensymbole fehlen, nur 2 Paritätssymbole"):
         recover(survivors, 10, 3)
 
 
@@ -97,9 +97,9 @@ def test_nothing_missing_needs_no_parity() -> None:
 
 def test_parameter_validation() -> None:
     assert encode_parity([b"ab"], 0) == []
-    with pytest.raises(ValueError, match="gleich lang"):
+    with pytest.raises(ValueError, match="same length"):
         encode_parity([b"ab", b"c"], 1)
     with pytest.raises(ValueError, match="256"):
         encode_parity([b"x"] * 250, 7)
-    with pytest.raises(ValueError, match="gleich lang"):
+    with pytest.raises(ValueError, match="same length"):
         recover({0: b"ab", 2: b"c"}, 2, 1)

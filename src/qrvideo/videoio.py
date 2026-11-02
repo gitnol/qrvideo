@@ -17,6 +17,8 @@ import imageio_ffmpeg
 import numpy as np
 import numpy.typing as npt
 
+from .i18n import _
+
 
 @dataclass(frozen=True)
 class VideoSettings:
@@ -109,10 +111,11 @@ def outdated_ffmpeg_warning(version: str | None = None) -> str | None:
     major = re.match(r"(\d+)", version)
     if major and int(major.group(1)) >= MIN_FFMPEG_MAJOR:
         return None
-    return (
-        f"Hinweis: gebuendeltes FFmpeg {version} ist aelter als {MIN_FFMPEG_MAJOR}; fuer Videos aus dem Netz "
-        "IMAGEIO_FFMPEG_EXE auf ein aktuelles FFmpeg setzen."
+    text = _(
+        "Note: the bundled FFmpeg {version} is older than {major}; for videos from the internet set "
+        "IMAGEIO_FFMPEG_EXE to a current FFmpeg."
     )
+    return text.format(version=version, major=MIN_FFMPEG_MAJOR)
 
 
 def read_video(path: Path) -> Iterator[npt.NDArray[np.uint8]]:

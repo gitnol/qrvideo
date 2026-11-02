@@ -22,6 +22,7 @@ from qrcodegenmod import Ecc
 
 from .erasure import encode_parity
 from .errors import ContainerError as ContainerError  # Name bleibt hier erhalten (vor I26 hier definiert)
+from .i18n import _
 
 MAGIC = b"QRV2"
 MAGIC_V3 = b"QRV3"
@@ -60,31 +61,34 @@ class FrameHeader:
     def unpack(data: bytes) -> FrameHeader:
         """v2: genau 55 Bytes; v3: Kopf am Anfang des aufgefuellten Kopf-QR."""
         if data.startswith(MAGIC_V3) and len(data) >= _HEADER_V3.size:
-            _, idx, count, length, chunk, ecc, k, m, digest = _HEADER_V3.unpack_from(data)
+            _magic, idx, count, length, chunk, ecc, k, m, digest = _HEADER_V3.unpack_from(data)
             header = FrameHeader(idx, count, length, chunk, ecc, digest, 3, k, m)
         elif data.startswith(MAGIC) and len(data) == _HEADER.size:
             header = FrameHeader(*_HEADER.unpack(data)[1:])
         else:
-            raise ContainerError("Kein v2- oder v3-Kopf")
+            raise ContainerError(_("Not a v2 or v3 header"))
         header.validate()
         return header
 
     def validate(self) -> None:
         if self.frame_index >= self.frame_count:
-            raise ContainerError(f"Frame-Index {self.frame_index} ausserhalb von {self.frame_count}")
+            text = _("Frame index {index} outside {count}")
+            raise ContainerError(text.format(index=self.frame_index, count=self.frame_count))
         if self.frame_count > MAX_FRAMES:
-            raise ContainerError(f"Frame-Anzahl {self.frame_count} ueber dem Limit {MAX_FRAMES}")
+            text = _("Frame count {count} above the limit {limit}")
+            raise ContainerError(text.format(count=self.frame_count, limit=MAX_FRAMES))
         prefix = SYMBOL_PREFIX if self.version == 3 else 0
         valid = {e.ordinal: size - prefix for e, size in CHUNK_BYTES.items()}
         if valid.get(self.ecc_ordinal) != self.chunk_bytes:
-            raise ContainerError(
-                f"Chunkgroesse {self.chunk_bytes} passt nicht zur ECC-Stufe {self.ecc_ordinal}"
-            )
+            text = _("Chunk size {size} does not match ECC level {level}")
+            raise ContainerError(text.format(size=self.chunk_bytes, level=self.ecc_ordinal))
         k, m = self.group_data, self.group_parity
         if self.version == 3 and not (k >= 1 and k + m <= MAX_GROUP):
-            raise ContainerError(f"Gruppe k={k}, m={m} ungueltig (k >= 1, k + m <= {MAX_GROUP})")
+            text = _("Group k={k}, m={m} invalid (k >= 1, k + m <= {limit})")
+            raise ContainerError(text.format(k=k, m=m, limit=MAX_GROUP))
         if self.symbol_count() > self.frame_count * DATA_SLOTS:
-            raise ContainerError(f"Laenge {self.payload_length} passt nicht in {self.frame_count} Frames")
+            text = _("Length {length} does not fit into {count} frames")
+            raise ContainerError(text.format(length=self.payload_length, count=self.frame_count))
 
     def symbol_count(self) -> int:
         """Daten-QR insgesamt: Chunks, in v3 zuzueglich m Paritaetssymbolen je Gruppe."""
@@ -123,12 +127,14 @@ def assemble(header: FrameHeader, chunks: dict[int, bytes]) -> bytes:
     )  # nur echte Chunks, nie bis zur behaupteten Laenge
     if len(present) < expected:
         first = next((i for i, k in enumerate(present) if i != k), len(present))
-        raise ContainerError(f"{expected - len(present)} Chunks fehlen, erster fehlender: {first}")
+        text = _("{count} chunks missing, first missing: {first}")
+        raise ContainerError(text.format(count=expected - len(present), first=first))
     payload = b"".join(chunks[i] for i in range(expected))
     if len(payload) != header.payload_length:
-        raise ContainerError(f"Laenge {len(payload)} statt {header.payload_length}")
+        text = _("Length {length} instead of {expected}")
+        raise ContainerError(text.format(length=len(payload), expected=header.payload_length))
     if hashlib.sha256(payload).digest() != header.sha256:
-        raise ContainerError("SHA-256 der Nutzlast stimmt nicht")
+        raise ContainerError(_("SHA-256 of the payload does not match"))
     return payload
 
 
@@ -152,10 +158,10 @@ def pack_symbol(index: int, data: bytes) -> bytes:
 
 def unpack_symbol(raw: bytes) -> tuple[int, bytes]:
     if len(raw) < SYMBOL_PREFIX:
-        raise ContainerError(f"Daten-QR zu kurz ({len(raw)} Bytes)")
+        raise ContainerError(_("Data QR too short ({size} bytes)").format(size=len(raw)))
     index, crc = _SYMBOL.unpack_from(raw)
     if zlib.crc32(raw[SYMBOL_PREFIX:], zlib.crc32(raw[:4])) != crc:
-        raise ContainerError("CRC32 des Daten-QR stimmt nicht")
+        raise ContainerError(_("CRC32 of the data QR does not match"))
     return index, raw[SYMBOL_PREFIX:]
 
 
@@ -174,7 +180,7 @@ def plan_frames_v3(
     wird der kurze letzte Chunk mit Nullen auf Chunkgroesse aufgefuellt; uebertragen wird er ungepolstert.
     """
     if not 0 <= parity < GROUP_SYMBOLS:
-        raise ValueError(f"Paritaet {parity} ausserhalb von 0..{GROUP_SYMBOLS - 1} Symbolen je Gruppe")
+        raise ValueError(f"Parity {parity} outside 0..{GROUP_SYMBOLS - 1} symbols per group")
     chunk = CHUNK_BYTES[ecl] - SYMBOL_PREFIX
     k = GROUP_SYMBOLS - parity
     chunks = [payload[i : i + chunk] for i in range(0, len(payload), chunk)] or [b""]

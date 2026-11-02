@@ -99,7 +99,7 @@ def test_more_than_m_losses_in_a_group_is_a_clear_error(frames: list[Frame]) -> 
 
 
 def test_parity_must_leave_data_in_a_group() -> None:
-    with pytest.raises(ValueError, match="Paritaet"):
+    with pytest.raises(ValueError, match="Parity"):
         plan_frames_v3(b"x", L, parity=140)
 
 

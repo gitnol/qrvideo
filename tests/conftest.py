@@ -11,6 +11,7 @@ import pytest
 import qrcodegen as ref
 
 import qrcodegenmod as mod
+from qrvideo.i18n import set_language
 
 ECC_PAIRS = [
     (mod.Ecc.LOW, ref.QrCode.Ecc.LOW),
@@ -32,6 +33,19 @@ def assert_same(ours: mod.QrCode, theirs: ref.QrCode) -> None:
     assert ours.get_mask() == theirs.get_mask()
     assert ours.get_error_correction_level().ordinal == theirs.get_error_correction_level().ordinal
     np.testing.assert_array_equal(ours.modules, ref_matrix(theirs))
+
+
+@pytest.fixture(autouse=True)
+def german_ui(monkeypatch: pytest.MonkeyPatch) -> Iterator[None]:
+    """Tests laufen auf Deutsch (die Pruefungen vor ADR-006 nennen deutsche Texte), egal wie der Rechner
+    eingestellt ist: `QRVIDEO_LANG` fuer die CLI, `set_language` fuer direkte Aufrufe.
+
+    Andere Sprachen setzt ein Test selbst; danach wieder Deutsch, damit kein Test den naechsten bestimmt.
+    """
+    monkeypatch.setenv("QRVIDEO_LANG", "de")
+    set_language("de")
+    yield
+    set_language("de")
 
 
 @pytest.fixture

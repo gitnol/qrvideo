@@ -12,6 +12,8 @@ from functools import partial
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from .i18n import _
+
 if TYPE_CHECKING:
     from .crypto import Crypto
 
@@ -35,7 +37,7 @@ def _write_message(path: Path, sealed: bytes, png: Path | None) -> None:
         from .qrpng import write_qr_png
 
         write_qr_png(png, sealed)
-        print(f"{png}: QR-Code")
+        print(_("{path}: QR code").format(path=png))
 
 
 def cmd_challenge(args: argparse.Namespace, crypto: CryptoFactory, passphrase: Passphrase) -> None:
@@ -46,7 +48,8 @@ def cmd_challenge(args: argparse.Namespace, crypto: CryptoFactory, passphrase: P
     _write_message(
         args.output, seal(crypto(args), message, args.recipient, args.sign, passphrase()), args.png
     )
-    print(f"{args.output}: Challenge mit {len(files)} Dateien und {len(message.videos)} Videos")
+    text = _("{path}: challenge with {files} files and {videos} videos")
+    print(text.format(path=args.output, files=len(files), videos=len(message.videos)))
 
 
 def cmd_respond(args: argparse.Namespace, crypto: CryptoFactory, passphrase: Passphrase) -> None:
@@ -55,55 +58,58 @@ def cmd_respond(args: argparse.Namespace, crypto: CryptoFactory, passphrase: Pas
     session = crypto(args)
     message, signer = open_sealed(session, _read_message(args.challenge), passphrase())
     if not isinstance(message, Challenge):
-        raise ValueError("Die Datei enthaelt keine Challenge")
+        raise ValueError(_("The file does not contain a challenge"))
     choices = [*message.files, *message.videos]
     if not 0 <= args.select < len(choices):
-        raise ValueError(f"Auswahl {args.select} ausserhalb von 0..{len(choices) - 1}")
+        text = _("Selection {number} outside 0..{last}")
+        raise ValueError(text.format(number=args.select, last=len(choices) - 1))
     recipients = args.recipient or [signer.signer_fingerprint]
     sealed = seal(session, Response(choices[args.select]), recipients, args.sign, passphrase())
     _write_message(args.output, sealed, args.png)
-    print(f"{args.output}: Antwort an {signer.username}: {choices[args.select]}")
+    text = _("{path}: response to {name}: {choice}")
+    print(text.format(path=args.output, name=signer.username, choice=choices[args.select]))
 
 
 def cmd_inspect(args: argparse.Namespace, crypto: CryptoFactory, passphrase: Passphrase) -> None:
     from .handshake import Challenge, open_sealed
 
     message, signer = open_sealed(crypto(args), _read_message(args.input), passphrase())
-    print(f"Signiert von {signer.username} ({signer.signer_fingerprint})")
+    text = _("Signed by {name} ({fingerprint})")
+    print(text.format(name=signer.username, fingerprint=signer.signer_fingerprint))
     if isinstance(message, Challenge):
         for number, entry in enumerate([*message.files, *message.videos]):
             print(f"{number:3d}  {entry}")
     else:
-        print(f"Auswahl: {message.selection}")
+        print(_("Selection: {selection}").format(selection=message.selection))
 
 
 def add_handshake_parsers(
     sub: argparse._SubParsersAction[argparse.ArgumentParser], crypto: CryptoFactory, passphrase: Passphrase
 ) -> None:
-    p = sub.add_parser("challenge", help="Server Challenge: Dateiangebot verschluesselt fuer Empfaenger")
-    p.add_argument("directory", type=Path, help="Ordner mit den angebotenen Dateien")
+    p = sub.add_parser("challenge", help=_("server challenge: offer of files, encrypted for recipients"))
+    p.add_argument("directory", type=Path, help=_("folder with the offered files"))
     p.add_argument("-r", "--recipient", action="append", required=True)
     p.add_argument("--sign", required=True)
     p.add_argument(
         "--video",
         action="append",
-        help="bereitgestelltes Video: <kanal>:<verweis> (z. B. folder:<Datei>) oder YouTube-Link, mehrfach",
+        help=_(
+            "published video: <channel>:<reference> (e.g. folder:<file>) or YouTube link, may be repeated"
+        ),
     )
     p.add_argument("-o", "--output", type=Path, required=True)
-    p.add_argument("--png", type=Path, help="zusaetzlich als QR-Code-Bild speichern")
+    p.add_argument("--png", type=Path, help=_("also save as a QR code image"))
     p.set_defaults(func=partial(cmd_challenge, crypto=crypto, passphrase=passphrase))
 
-    p = sub.add_parser("respond", help="Client Response: Eintrag aus einer Challenge waehlen")
+    p = sub.add_parser("respond", help=_("client response: choose an entry from a challenge"))
     p.add_argument("challenge", type=Path)
-    p.add_argument("--select", type=int, required=True, help="Nummer aus 'qrvideo inspect'")
+    p.add_argument("--select", type=int, required=True, help=_("number from 'qrvideo inspect'"))
     p.add_argument("--sign", required=True)
-    p.add_argument("-r", "--recipient", action="append", help="Standard: Absender der Challenge")
+    p.add_argument("-r", "--recipient", action="append", help=_("default: sender of the challenge"))
     p.add_argument("-o", "--output", type=Path, required=True)
-    p.add_argument("--png", type=Path, help="zusaetzlich als QR-Code-Bild speichern")
+    p.add_argument("--png", type=Path, help=_("also save as a QR code image"))
     p.set_defaults(func=partial(cmd_respond, crypto=crypto, passphrase=passphrase))
 
-    p = sub.add_parser(
-        "inspect", help="Challenge oder Response (.asc oder QR-PNG) entschluesseln und anzeigen"
-    )
+    p = sub.add_parser("inspect", help=_("decrypt and show a challenge or response (.asc or QR PNG)"))
     p.add_argument("input", type=Path)
     p.set_defaults(func=partial(cmd_inspect, crypto=crypto, passphrase=passphrase))

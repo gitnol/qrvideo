@@ -20,6 +20,7 @@ import numpy.typing as npt
 
 import qrcodegenmod as q
 from qrvideo.encoder import DEFAULT_ECC, DEFAULT_PARITY_PERCENT, frame_count, iter_frames, parity_symbols
+from qrvideo.i18n import N_, _
 from qrvideo.videoio import DEFAULT_SETTINGS, VideoSettings, write_video
 
 from .jobs import Progress
@@ -30,10 +31,10 @@ FrameSource = Callable[[bytes, q.Ecc, int | None, int, int], Iterator[Frame]]  #
 VideoWriter = Callable[[Path, Iterable[Frame], VideoSettings], int]
 
 VIDEO_SUFFIX = ".mp4"
-FRAME_TEXT = "Frame"
-YOUTUBE_HINT = (
-    "Das Video jetzt in YouTube Studio (studio.youtube.com) hochladen und die Sichtbarkeit auf "
-    "„Nicht gelistet“ stellen. Den Link schicken Sie dem Empfänger auf einem anderen Weg."
+FRAME_TEXT = N_("Frame")  # Fortschritt „Frame n von N“; uebersetzt beim Gebrauch
+YOUTUBE_HINT = N_(
+    "Now upload the video in YouTube Studio (studio.youtube.com) and set its visibility to “Unlisted”. "
+    "Send the link to the recipient by another route."
 )
 
 
@@ -68,15 +69,15 @@ def validate(request: SendRequest) -> list[str]:
     """Verstaendliche Saetze fuer alles, was vor dem Start fehlt; leer = bereit."""
     problems = []
     if not request.source.is_file():
-        problems.append("Bitte eine vorhandene Datei zum Senden wählen.")
+        problems.append(_("Please choose an existing file to send."))
     if not request.recipients:
-        problems.append("Bitte mindestens einen Empfänger ankreuzen.")
+        problems.append(_("Please tick at least one recipient."))
     if not request.signer:
-        problems.append("Bitte Ihren eigenen Signaturschlüssel wählen.")
+        problems.append(_("Please choose your own signing key."))
     if request.target.suffix.lower() != VIDEO_SUFFIX:
-        problems.append(f"Das Zielvideo muss auf {VIDEO_SUFFIX} enden.")
+        problems.append(_("The target video must end in {suffix}.").format(suffix=VIDEO_SUFFIX))
     elif request.source.is_file() and request.target.resolve() == request.source.resolve():
-        problems.append("Das Zielvideo darf nicht die Quelldatei sein.")
+        problems.append(_("The target video must not be the source file."))
     return problems
 
 
@@ -104,9 +105,9 @@ class SendPresenter:
         if problems:
             raise ValueError(" ".join(problems))
         if request.target.exists() and not overwrite:
-            raise FileExistsError(17, "Zielvideo existiert", str(request.target))
+            raise FileExistsError(17, _("Target video exists"), str(request.target))
         started = time.monotonic()
-        progress.report(0, None, "Verschlüsseln und signieren …")
+        progress.report(0, None, _("Encrypting and signing …"))
         encrypted = self._keys.crypto().encrypt(
             request.source.read_bytes(),
             list(request.recipients),
@@ -118,7 +119,8 @@ class SendPresenter:
         version = 2 if request.parity is None else 3
         source = self._frames(encrypted, request.ecc, _workers(), version, request.parity or 0)
         try:
-            count = self._writer(request.target, progress.count(source, total, FRAME_TEXT), self._settings)
+            frames = progress.count(source, total, _(FRAME_TEXT))
+            count = self._writer(request.target, frames, self._settings)
         finally:
             close = getattr(source, "close", None)  # Generator: beendet den Prozess-Pool auch bei Abbruch
             if close is not None:

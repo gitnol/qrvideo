@@ -14,6 +14,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from .i18n import _
+
 VIDEO_ID = re.compile(r"[A-Za-z0-9_-]{11}")
 _URL_PATTERNS = (
     re.compile(r"youtu\.be/([A-Za-z0-9_-]{11})"),
@@ -34,9 +36,8 @@ def parse_browser_spec(text: str) -> tuple[str, ...]:
     browser, sep, profile = text.strip().partition(":")
     browser = browser.lower()
     if browser not in BROWSERS or (sep and not profile.strip()) or _CONTROL.search(profile):
-        raise ValueError(
-            f"Unbekannter Browser oder ungueltiges Profil {text!r} (Browser: {', '.join(BROWSERS)})"
-        )
+        message = _("Unknown browser or invalid profile {text!r} (browsers: {names})")
+        raise ValueError(message.format(text=text, names=", ".join(BROWSERS)))
     return (browser, profile.strip()) if sep else (browser,)
 
 
@@ -49,7 +50,7 @@ def parse_video_id(text: str) -> str:
             return match.group(1)
     if VIDEO_ID.fullmatch(text):
         return text
-    raise ValueError(f"Keine YouTube-Video-ID erkannt: {text!r}")
+    raise ValueError(_("No YouTube video ID recognised: {text!r}").format(text=text))
 
 
 def download(
@@ -76,7 +77,7 @@ def download(
         info = ydl.extract_info(f"https://www.youtube.com/watch?v={video_id}", download=True)
         path = Path(ydl.prepare_filename(info))
     if not path.is_file():
-        raise FileNotFoundError(f"Download lieferte keine Datei: {path}")
+        raise FileNotFoundError(_("The download produced no file: {path}").format(path=path))
     return path
 
 
@@ -137,6 +138,6 @@ def upload(
     request = youtube.videos().insert(part="snippet,status", body=body, media_body=media)
     response = None
     while response is None:
-        _, response = request.next_chunk(num_retries=5)
+        _progress, response = request.next_chunk(num_retries=5)
     status = response.get("status") or {}
     return Uploaded(str(response["id"]), status.get("privacyStatus"))

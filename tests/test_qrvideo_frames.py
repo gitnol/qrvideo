@@ -93,7 +93,7 @@ def test_plan_and_assemble_errors() -> None:
         assemble(plans[0].header, {k: v for k, v in chunks.items() if k != 5})
     with pytest.raises(ContainerError, match="SHA-256"):
         assemble(plans[0].header, {**chunks, 0: bytes(2331)})
-    with pytest.raises(ContainerError, match="Laenge"):
+    with pytest.raises(ContainerError, match="Länge"):
         assemble(plans[0].header, {**chunks, 20: b"\x00"})
 
 

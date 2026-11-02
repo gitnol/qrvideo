@@ -93,7 +93,7 @@ def test_png_bomb_is_rejected_quickly(tmp_path: Path) -> None:
     path = tmp_path / "bombe.png"
     path.write_bytes(_png_bytes(20000, 20000, bytes(20001) * 2000))  # Daten bewusst zu kurz
     start = time.perf_counter()
-    with pytest.raises(ValueError, match="gross"):
+    with pytest.raises(ValueError, match="groß"):
         read_png(path)
     assert time.perf_counter() - start < 1
 

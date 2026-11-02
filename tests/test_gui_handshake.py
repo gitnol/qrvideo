@@ -11,6 +11,7 @@ from gui_fakes import ALICE, BOB, FakeCrypto, pump
 
 from qrvideo.crypto import Crypto, SignatureInfo, UntrustedSignatureError
 from qrvideo.handshake import Response, open_sealed
+from qrvideo.i18n import set_language
 from qrvideo.qrpng import read_qr_png
 from qrvideo_gui.handshake import ChallengeRequest, HandshakePresenter, ResponseRequest
 from qrvideo_gui.jobs import Progress
@@ -173,3 +174,27 @@ def test_handshake_tab_creates_opens_and_answers(tmp_path: Path, root: tk.Toplev
     pump(root, lambda: "Gespeichert" in tab.response_result.get())
     message, _ = open_sealed(cast(Crypto, crypto), (tmp_path / "response.asc").read_bytes())
     assert message == Response(f"youtube:{VIDEO_ID}")
+
+
+@pytest.mark.parametrize(
+    ("lang", "summary", "error"),
+    [
+        (
+            "en",
+            "Saved: challenge.asc and challenge.png – offer with 2 files and 1 video.",
+            "“kein-link” is neither a YouTube link nor a reference like folder:<file name>.",
+        ),
+        (
+            "es",
+            "Guardado: challenge.asc y challenge.png – oferta con 2 archivos y 1 vídeo.",
+            "«kein-link» no es ni un enlace de YouTube ni una referencia como folder:<nombre de archivo>.",
+        ),
+    ],
+)
+def test_challenge_texts_follow_the_language(lang: str, summary: str, error: str, tmp_path: Path) -> None:
+    set_language(lang)
+    presenter, _ = _presenter()
+    assert presenter.create_challenge(_challenge(tmp_path), Progress()).summary == summary
+    with pytest.raises(ValueError) as caught:
+        presenter.create_challenge(_challenge(tmp_path / "b", videos=("kein-link",)), Progress())
+    assert str(caught.value) == error

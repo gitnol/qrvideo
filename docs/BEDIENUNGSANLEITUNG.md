@@ -1,6 +1,6 @@
 # Bedienungsanleitung – qrvideo
 
-*English version: [USER_GUIDE.md](USER_GUIDE.md)*
+*English version: [USER_GUIDE.md](USER_GUIDE.md) · Versión en español: [GUIA_DE_USUARIO.md](GUIA_DE_USUARIO.md)*
 
 Für alle, die Dateien mit `qrvideo` verschlüsselt als Video übertragen möchten. Vorwissen über das Projekt ist
 nicht nötig. Teil 1–9 beschreiben die Bedienoberfläche, der Anhang die Kommandozeile. Die Bilder zeigen
@@ -58,7 +58,7 @@ Senden und empfangen können Sie nur mit Personen, deren Schlüssel Sie **beglau
 
 Erst dann gilt der Schlüssel als „voll vertraut“ und erscheint in `qrvideo`.
 
-### 2.4 Programm starten
+### 2.4 Programm starten und Sprache wählen
 
 ```powershell
 uv run qrvideo-gui
@@ -66,6 +66,10 @@ uv run qrvideo-gui
 
 Es öffnet sich das Fenster „qrvideo – Dateien als QR-Code-Video übertragen“ mit vier Reitern. Daneben bleibt
 ein Konsolenfenster offen; dort stehen technische Details, falls etwas schiefgeht. Bitte nicht schließen.
+
+Die Oberfläche gibt es auf Deutsch, Englisch und Spanisch. Sie startet in der Sprache des Systems. Eine andere
+Sprache wählen Sie im Menü **Sprache** (jede Sprache steht unter ihrem eigenen Namen: Deutsch, English, Español);
+die Wahl wird gespeichert und gilt nach einem Neustart. Nur für einen Start: `uv run qrvideo-gui --lang de`.
 
 ---
 
@@ -76,7 +80,7 @@ Schlüssel steht oben („ultimativ (eigener Schlüssel)“). Nach Änderungen i
 
 Fehlt ein Partner hier, haben Sie seinen Schlüssel noch nicht beglaubigt (Abschnitt 2.3).
 
-![Reiter Schlüssel mit zwei vertrauten Schlüsseln](images/bedienung/schluessel.png)
+![Reiter Schlüssel mit zwei vertrauten Schlüsseln](images/de/keys.png)
 
 *Reiter „Schlüssel“ aus Sicht von Alice: ihr eigener Schlüssel und der beglaubigte von Bob.*
 
@@ -95,7 +99,7 @@ Während der Arbeit zeigt ein Balken „Frame n von N“; **Abbrechen** beendet 
 gespeichert. Gibt es das Zielvideo schon, fragt das Programm vor dem Überschreiben. Am Ende stehen Name, Anzahl
 Frames und Länge des Videos da; **Ordner öffnen** zeigt es im Explorer.
 
-![Reiter Senden nach dem Senden](images/bedienung/senden-fertig.png)
+![Reiter Senden nach dem Senden](images/de/send-done.png)
 
 *Alice hat eine Datei für Bob als Video geschrieben. Darunter der Hinweis zum Hochladen.*
 
@@ -135,7 +139,7 @@ Das Ergebnis nennt Dateiname, Größe, **Signiert von** und den **Fingerabdruck*
 bei Zweifel am Telefon. Die Datei bekommt ihren Originalnamen; ist der schon belegt, heißt sie `name (2).endung`.
 Vorhandene Dateien werden nie überschrieben.
 
-![Reiter Empfangen nach dem Empfang](images/bedienung/empfangen.png)
+![Reiter Empfangen nach dem Empfang](images/de/receive-done.png)
 
 *Bob hat das Video eingelesen: Originalname, Absender Alice und ihr Fingerabdruck. Der graue Hinweis zu FFmpeg ist nur eine Warnung (Abschnitt 8).*
 
@@ -154,7 +158,7 @@ Optional, für den Ablauf aus der Thesis: Sie bieten eine Liste an, der Partner 
    QR-Code-Bild (.png)**.
 4. **Challenge erstellen** und die Datei dem Partner schicken.
 
-![Handshake: Angebot erstellt](images/bedienung/handshake-angebot.png)
+![Handshake: Angebot erstellt](images/de/handshake-offer.png)
 
 *Alice bietet Bob drei Dateien an; gespeichert als Text (.asc) und QR-Code-Bild (.png).*
 
@@ -165,7 +169,7 @@ Optional, für den Ablauf aus der Thesis: Sie bieten eine Liste an, der Partner 
    **Auswahl als Response speichern**.
 3. Die Antwort zurückschicken; der Anbieter öffnet sie rechts genauso.
 
-![Handshake: Angebot geöffnet und Eintrag gewählt](images/bedienung/handshake-antwort.png)
+![Handshake: Angebot geöffnet und Eintrag gewählt](images/de/handshake-answer.png)
 
 *Bob hat das QR-Code-Bild geöffnet, sieht Absender und Fingerabdruck und wählt eine Datei aus.*
 
@@ -199,6 +203,8 @@ installiert hat, kann es über die Umgebungsvariable `IMAGEIO_FFMPEG_EXE` angebe
 - **Nichts wird still überschrieben:** Videos nur nach Rückfrage, empfangene Dateien nie.
 - **Schließen während eines Vorgangs** fragt nach und bricht ihn ab.
 - **Thesis-Videos von 2019** liest nur die Kommandozeile (`decode --legacy`, siehe Anhang).
+- **Sprachen:** Auch die Kommandozeile spricht Deutsch, Englisch und Spanisch (`--lang` oder die
+  Umgebungsvariable `QRVIDEO_LANG`). Wie man eine Sprache ergänzt, steht im [README](../README.md#sprachen).
 
 ---
 

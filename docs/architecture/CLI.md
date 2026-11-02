@@ -11,7 +11,7 @@ eigene CLI; `bench/bench_qrcode.py` ist ein Entwicklerwerkzeug.
 
 ```bash
 # modernisierte Pipeline (seit I7; Extras video/crypto/youtube bzw. all)
-uv run qrvideo [--gnupghome PFAD] <unterbefehl> ...
+uv run qrvideo [--gnupghome PFAD] [--lang de|en|es] <unterbefehl> ...
 
 # Desktop-GUI (seit I20b, docs/features/GUI.md); --gnupghome wie bei qrvideo
 uv run qrvideo-gui [--gnupghome PFAD]
@@ -34,6 +34,7 @@ Pflicht); weitere Prüfungen finden erst in den Unterbefehlen statt (z. B. Zield
 | Argument | Typ | Pflicht | Default | Validierung | Beschreibung |
 |----------|-----|---------|---------|-------------|-------------|
 | `--gnupghome` (global) | Pfad | nein | Schlüsselbund des Nutzers | — | eigener GnuPG-Schlüsselbund |
+| `--lang` (global, seit I33d) | `de`\|`en`\|`es` | nein | `QRVIDEO_LANG`, sonst Sprache des Systems, sonst `en` | argparse-Auswahl | Sprache von Hilfe, Ausgaben und Fehlermeldungen (ADR-006); auch argparse-Texte wie „usage:“ |
 | `encode INPUT -o OUTPUT` | Pfad | ja | — | — | Datei (z. B. `.gpg`) als Video kodieren |
 | `decode INPUT -o OUTPUT [--legacy]` | Pfad | ja | — | — | Video zurück zur Datei; `--legacy` = Thesis-Format 2019 |
 | `send INPUT -r KEY [-r KEY …] --sign KEY -o OUTPUT` | Pfad / str | ja | — | — | verschlüsseln, signieren, als Video kodieren (ohne Zwischendatei seit I13) |

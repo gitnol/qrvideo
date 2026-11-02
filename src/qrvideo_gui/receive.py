@@ -22,6 +22,7 @@ import numpy.typing as npt
 
 from qrvideo.channel import Channel, make_channel
 from qrvideo.decoder import DecodeReport, decode_frames
+from qrvideo.i18n import N_, _
 from qrvideo.paths import safe_filename
 from qrvideo.videoio import outdated_ffmpeg_warning, read_video
 from qrvideo.youtube import BROWSERS, parse_browser_spec
@@ -34,14 +35,18 @@ Reader = Callable[[Path], Iterator[Frame]]
 Decoder = Callable[[Iterable[Frame]], tuple[bytes, DecodeReport]]
 
 PART_SUFFIX = ".part"
-# Wie der Kanal im Satz heisst und was ihn verlangt; unbekannte Kanaele fallen auf den Namen zurueck
-CHANNEL_LABELS = {"youtube": "YouTube", "folder": "dem Kanal-Ordner"}
-SOURCE_ERRORS = {
-    "youtube": "Bitte eine Videodatei wählen oder einen YouTube-Link einfügen.",
-    "folder": "Bitte eine Videodatei wählen oder einen Dateinamen aus dem Kanal-Ordner eingeben.",
+# Ganze Saetze je Kanal (Grammatik je Sprache); unbekannte Kanaele bekommen den allgemeinen Satz mit Namen.
+# Alle Texte per `N_` markiert, uebersetzt beim Gebrauch.
+CHANNEL_LOADING = {
+    "youtube": N_("Loading the video from YouTube …"),
+    "folder": N_("Loading the video from the channel folder …"),
 }
-FRAME_TEXT = "Frames gelesen:"
-BROWSER_ERROR = "Unbekannter Browser „{}“. Erlaubt: {}, optional mit „:Profil“."
+SOURCE_ERRORS = {
+    "youtube": N_("Please choose a video file or paste a YouTube link."),
+    "folder": N_("Please choose a video file or enter a file name from the channel folder."),
+}
+FRAME_TEXT = N_("Frames read:")
+BROWSER_ERROR = N_("Unknown browser “{browser}”. Allowed: {names}, optionally with “:profile”.")
 
 
 @dataclass(frozen=True)
@@ -71,22 +76,23 @@ def _decode(frames: Iterable[Frame]) -> tuple[bytes, DecodeReport]:
 
 
 def channel_for(request: ReceiveRequest) -> Channel:
-    """Kanal aus den Angaben im Reiter; Fehler als deutsche Meldung (die CLI meldet ueber argparse)."""
+    """Kanal aus den Angaben im Reiter; Fehler als Satz fuer den Nutzer (die CLI meldet ueber argparse)."""
     cookies = None
     if request.browser.strip():
         try:
             cookies = parse_browser_spec(request.browser)
         except ValueError:
-            raise ValueError(BROWSER_ERROR.format(request.browser.strip(), ", ".join(BROWSERS))) from None
+            text = _(BROWSER_ERROR).format(browser=request.browser.strip(), names=", ".join(BROWSERS))
+            raise ValueError(text) from None
     if request.channel == "folder":
         if cookies:
-            raise ValueError("Die Browser-Anmeldung gilt nur für YouTube.")
+            raise ValueError(_("The browser sign-in only applies to YouTube."))
         if request.folder is None or not request.folder.is_dir():
-            raise ValueError("Bitte einen vorhandenen Kanal-Ordner wählen.")
+            raise ValueError(_("Please choose an existing channel folder."))
     try:
         return make_channel(request.channel, folder=request.folder, cookies_from_browser=cookies)
     except ValueError:
-        raise ValueError(f"Unbekannter Kanal „{request.channel}“.") from None
+        raise ValueError(_("Unknown channel “{name}”.").format(name=request.channel)) from None
 
 
 def free_name(target: Path) -> Path:
@@ -119,30 +125,36 @@ class ReceivePresenter:
         try:
             return channel.parse_ref(text), channel
         except ValueError:
-            fallback = f"Kein gültiger Verweis für den Kanal {channel.name}."
-            raise ValueError(SOURCE_ERRORS.get(channel.name, fallback)) from None
+            if channel.name in SOURCE_ERRORS:
+                raise ValueError(_(SOURCE_ERRORS[channel.name])) from None
+            raise ValueError(
+                _("Not a valid reference for the channel {name}.").format(name=channel.name)
+            ) from None
 
     def target_for(self, request: ReceiveRequest) -> Path:
         """Rueckfallname aus dem Video (ohne eingebetteten Namen); prueft zugleich die Eingabe."""
-        source, _ = self._source(request)
+        source, _channel = self._source(request)
         stem = Path(source).stem  # Verweis im Ordner-Kanal traegt `.mp4`, eine YouTube-ID nie einen Punkt
         return request.output_dir / safe_filename(stem)
 
     def run(self, request: ReceiveRequest, progress: Progress) -> ReceiveResult:
         """Laeuft im Hintergrund-Thread. Passphrase: None -> gpg-agent/pinentry fragt selbst."""
         if not request.output_dir.is_dir():
-            raise ValueError("Bitte einen vorhandenen Ausgabeordner wählen.")
+            raise ValueError(_("Please choose an existing output folder."))
         source, channel = self._source(request)
         fallback = self.target_for(request)
         warning = self._warning()
         video, downloaded = Path(source), None
         if channel is not None:
-            label = CHANNEL_LABELS.get(channel.name, channel.name)
-            progress.report(0, None, f"Video wird von {label} geladen …")
+            if channel.name in CHANNEL_LOADING:
+                loading = _(CHANNEL_LOADING[channel.name])
+            else:
+                loading = _("Loading the video from {name} …").format(name=channel.name)
+            progress.report(0, None, loading)
             video = downloaded = channel.fetch(str(source), request.output_dir)
-        progress.report(0, None, "Frames werden gelesen …")
-        data, report = self._decode(progress.count(self._reader(video), None, FRAME_TEXT))
-        progress.report(0, None, "Entschlüsseln und Signatur prüfen …")
+        progress.report(0, None, _("Reading frames …"))
+        data, report = self._decode(progress.count(self._reader(video), None, _(FRAME_TEXT)))
+        progress.report(0, None, _("Decrypting and checking the signature …"))
         plain, signer, name = self._keys.crypto().decrypt_with_name(data, None)
         progress.check()
         # Der eingebettete Name stammt vom Absender: fremde Eingabe, nur als Basisname (Threat T5)

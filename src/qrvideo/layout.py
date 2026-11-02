@@ -46,13 +46,13 @@ class FrameLayout:
     def compose(self, tiles: list[U8 | None]) -> U8:
         """Setzt bis zu `slots` QR-Bilder (None = weisser Slot) zu einem Frame zusammen."""
         if len(tiles) > self.slots:
-            raise ValueError(f"Hoechstens {self.slots} QR-Codes pro Frame")
+            raise ValueError(f"At most {self.slots} QR codes per frame")
         canvas = np.full((self.rows * self.tile, self.width + self.crop), 255, dtype=np.uint8)
         for slot, tile in enumerate(tiles):
             if tile is None:
                 continue
             if tile.shape != (self.tile, self.tile):
-                raise ValueError(f"QR-Bild hat {tile.shape}, erwartet {(self.tile, self.tile)}")
+                raise ValueError(f"QR image has {tile.shape}, expected {(self.tile, self.tile)}")
             r, c = divmod(slot, self.cols)
             canvas[r * self.tile : (r + 1) * self.tile, c * self.tile : (c + 1) * self.tile] = tile
         return canvas[self.crop : self.crop + self.height, self.crop : self.crop + self.width].copy()
@@ -60,7 +60,7 @@ class FrameLayout:
     def sample(self, frame: U8) -> tuple[Bool, npt.NDArray[np.float64]]:
         """Alle Slots abtasten: (dunkel-Matrix [slots, 177, 177], mittlere Helligkeit je Slot)."""
         if frame.shape != (self.height, self.width):
-            raise ValueError(f"Frame hat {frame.shape}, erwartet {(self.height, self.width)}")
+            raise ValueError(f"Frame has {frame.shape}, expected {(self.height, self.width)}")
         n, s = self.modules, self.scale
         out = np.empty((self.slots, n, n), dtype=bool)
         brightness = np.empty(self.slots, dtype=np.float64)

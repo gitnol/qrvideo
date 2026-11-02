@@ -9,11 +9,13 @@ und [[FAIL_FAST]].
 ## Quellen-Hierarchie (Präzedenz, höchste zuerst)
 
 1. **CLI-Argumente** (`--option value`, `qrvideo` seit I7)
-2. **Umgebungsvariablen** (`QRVIDEO_GPG`, `QRVIDEO_PASSPHRASE`, `IMAGEIO_FFMPEG_EXE`, `QRCODEGENMOD_DISABLE_JIT`,
+2. **Umgebungsvariablen** (`QRVIDEO_GPG`, `QRVIDEO_PASSPHRASE`, `QRVIDEO_LANG`, `IMAGEIO_FFMPEG_EXE`, `QRCODEGENMOD_DISABLE_JIT`,
    `UV_PROJECT_ENVIRONMENT`; Tabelle unten)
 3. **Code-Defaults** (Konstanten, Default-Argumente)
 
-Eine Konfigurationsdatei gibt es nicht (Ist-Stand seit I7). Die einzige Datei, die das Programm liest, ist das
+Eine Konfigurationsdatei gibt es nur für die GUI: `settings.json` im Benutzerprofil (seit I33i,
+`qrvideo_gui.settings`) mit der im Menü „Sprache“ gewählten Sprache; Rang zwischen Umgebungsvariable und System,
+fehlend oder kaputt = ignoriert. Sonst liest das Programm nur das
 OAuth-Token unter `%APPDATA%\qrvideo\` bzw. die per `--client-secrets` übergebene Datei. CLI-Argumente und
 Umgebungsvariablen überschneiden sich derzeit nicht (kein Schlüssel ist aus beiden Quellen setzbar).
 
@@ -71,6 +73,7 @@ Umgebungsvariablen überschneiden sich derzeit nicht (kein Schlüssel ist aus be
 | Worker-Anzahl | `int` | alle Kerne | CLI `--workers` | Prozess-Pool beim Rendern |
 | `QRVIDEO_GPG` | Pfad | GnuPG-Installation, sonst `gpg` im PATH ohne die gpg aus Git | ENV | `qrvideo.crypto.find_gpg_binary` |
 | `--gnupghome` | Pfad | Schlüsselbund des Nutzers | CLI | eigener Schlüsselbund, z. B. für Tests |
+| `--lang` / `QRVIDEO_LANG` (/ GUI-`settings.json`) | `de`, `en`, `es` | Sprache des Systems (Windows: Sprache der Oberfläche), sonst `en` | CLI / ENV / Datei (nur GUI) | Sprache der Nutzertexte (ADR-006, seit I33d); nicht unterstützte Werte fallen auf die nächste Quelle zurück |
 | `QRVIDEO_PASSPHRASE` | Secret | nicht gesetzt → gpg-agent/pinentry | ENV | nur für unbeaufsichtigte Läufe (`operations/SECRETS_MANAGEMENT.md`) |
 | `IMAGEIO_FFMPEG_EXE` | Pfad | gebündeltes FFmpeg aus `imageio-ffmpeg` | ENV | aktuelles System-FFmpeg erzwingen (gebündelt: 7.1, siehe `security/DEPENDENCY_AUDIT.md`) |
 | `QRCODEGENMOD_DISABLE_JIT` | `0/1` | `0` | ENV | Numba abschalten, NumPy-Fallback |

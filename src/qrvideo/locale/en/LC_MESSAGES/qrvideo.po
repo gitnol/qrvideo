@@ -1,0 +1,1122 @@
+# en – qrvideo (ADR-006). Pflege: tools/i18n_catalog.py
+msgid ""
+msgstr ""
+"Project-Id-Version: qrvideo\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/qrvideo/cli.py:50
+msgid "%(prog)s: error: %(message)s\n"
+msgstr "%(prog)s: error: %(message)s\n"
+
+#: src/qrvideo_gui/keys.py:20
+msgid "(no name)"
+msgstr "(no name)"
+
+#: src/qrvideo/channel.py:162
+msgid "--cookies-from-browser only applies to YouTube"
+msgstr "--cookies-from-browser only applies to YouTube"
+
+#: src/qrvideo/cli.py:98
+msgid "0..{max} expected"
+msgstr "0..{max} expected"
+
+#: src/qrvideo_gui/receive_view.py:63
+msgid "1. Channel"
+msgstr "1. Channel"
+
+#: src/qrvideo_gui/send_view.py:38
+msgid "1. File you want to send"
+msgstr "1. File you want to send"
+
+#: src/qrvideo_gui/send_view.py:41
+msgid "2. Tick the recipients"
+msgstr "2. Tick the recipients"
+
+#: src/qrvideo_gui/receive_view.py:81
+msgid "2. Video"
+msgstr "2. Video"
+
+#: src/qrvideo_gui/receive_view.py:86
+msgid "3. Output folder"
+msgstr "3. Output folder"
+
+#: src/qrvideo_gui/send_view.py:44
+msgid "3. Sign with your key"
+msgstr "3. Sign with your key"
+
+#: src/qrvideo_gui/send_view.py:47
+msgid "4. Target video"
+msgstr "4. Target video"
+
+#: src/qrvideo_gui/app.py:186
+msgid "A task is still running. Cancel it and quit?"
+msgstr "A task is still running. Cancel it and quit?"
+
+#: src/qrvideo_gui/handshake_view.py:163
+#: src/qrvideo_gui/receive_view.py:128
+msgid "All files"
+msgstr "All files"
+
+#: src/qrvideo/cli.py:265
+msgid "BROWSER[:PROFILE]"
+msgstr "BROWSER[:PROFILE]"
+
+#: src/qrvideo_gui/send_view.py:40
+msgid "Browse …"
+msgstr "Browse …"
+
+#: src/qrvideo_gui/receive_view.py:71
+msgid "Browser sign-in:"
+msgstr "Browser sign-in:"
+
+#: src/qrvideo/container.py:164
+msgid "CRC32 of the data QR does not match"
+msgstr "CRC32 of the data QR does not match"
+
+#: src/qrvideo_gui/receive_view.py:96
+#: src/qrvideo_gui/send_view.py:55
+msgid "Cancel"
+msgstr "Cancel"
+
+#: src/qrvideo/cli.py:307
+msgid "Cancelled"
+msgstr "Cancelled"
+
+#: src/qrvideo_gui/errors.py:69
+#: src/qrvideo_gui/handshake_view.py:184
+msgid "Cancelled."
+msgstr "Cancelled."
+
+#: src/qrvideo_gui/send_view.py:165
+msgid "Cancelled. No video was saved."
+msgstr "Cancelled. No video was saved."
+
+#: src/qrvideo_gui/receive_view.py:190
+msgid "Cancelled. Nothing was saved."
+msgstr "Cancelled. Nothing was saved."
+
+#: src/qrvideo_gui/receive_view.py:168
+#: src/qrvideo_gui/send_view.py:135
+msgid "Cancelling …"
+msgstr "Cancelling …"
+
+#: src/qrvideo_gui/handshake_view.py:234
+msgid ""
+"Challenge with {count} entry – please choose it.\n"
+"{sender}"
+msgid_plural ""
+"Challenge with {count} entries – please choose one.\n"
+"{sender}"
+msgstr[0] ""
+"Challenge with {count} entry – please choose it.\n"
+"{sender}"
+msgstr[1] ""
+"Challenge with {count} entries – please choose one.\n"
+"{sender}"
+
+#: src/qrvideo/channel.py:113
+msgid "Channel folder missing: {path}"
+msgstr "Channel folder missing: {path}"
+
+#: src/qrvideo_gui/receive_view.py:74
+msgid "Channel folder:"
+msgstr "Channel folder:"
+
+#: src/qrvideo_gui/send_view.py:88
+msgid "Choose a file to send"
+msgstr "Choose a file to send"
+
+#: src/qrvideo_gui/receive_view.py:21
+msgid "Choose a video file or enter a file name from the channel folder."
+msgstr "Choose a video file or enter a file name from the channel folder."
+
+#: src/qrvideo_gui/receive_view.py:20
+msgid "Choose a video file or paste a YouTube link (e.g. https://youtu.be/…)."
+msgstr "Choose a video file or paste a YouTube link (e.g. https://youtu.be/…)."
+
+#: src/qrvideo_gui/receive_view.py:134
+msgid "Choose channel folder"
+msgstr "Choose channel folder"
+
+#: src/qrvideo_gui/receive_view.py:83
+msgid "Choose file …"
+msgstr "Choose file …"
+
+#: src/qrvideo_gui/receive_view.py:78
+#: src/qrvideo_gui/receive_view.py:88
+msgid "Choose folder …"
+msgstr "Choose folder …"
+
+#: src/qrvideo_gui/receive_view.py:139
+msgid "Choose output folder"
+msgstr "Choose output folder"
+
+#: src/qrvideo_gui/receive_view.py:127
+msgid "Choose video"
+msgstr "Choose video"
+
+#: src/qrvideo/container.py:83
+msgid "Chunk size {size} does not match ECC level {level}"
+msgstr "Chunk size {size} does not match ECC level {level}"
+
+#: src/qrvideo_gui/handshake_view.py:67
+msgid "Create an offer (challenge)"
+msgstr "Create an offer (challenge)"
+
+#: src/qrvideo_gui/handshake_view.py:101
+msgid "Create challenge"
+msgstr "Create challenge"
+
+#: src/qrvideo/container.py:161
+msgid "Data QR too short ({size} bytes)"
+msgstr "Data QR too short ({size} bytes)"
+
+#: src/qrvideo_gui/handshake.py:150
+#: src/qrvideo_gui/receive.py:157
+msgid "Decrypting and checking the signature …"
+msgstr "Decrypting and checking the signature …"
+
+#: src/qrvideo/crypto.py:148
+msgid "Decryption failed: {status}"
+msgstr "Decryption failed: {status}"
+
+#: src/qrvideo_gui/errors.py:29
+msgid "Decryption was not possible. Is your private key present and the passphrase correct? Is the message addressed to you at all?"
+msgstr "Decryption was not possible. Is your private key present and the passphrase correct? Is the message addressed to you at all?"
+
+#: src/qrvideo_gui/send_view.py:151
+msgid "Done: {name} – {frames} frames, {seconds} s of video (took {elapsed} s)."
+msgstr "Done: {name} – {frames} frames, {seconds} s of video (took {elapsed} s)."
+
+#: src/qrvideo_gui/receive_view.py:33
+msgid ""
+"Done: “{name}” saved ({size} bytes).\n"
+"Signed by: {signer}\n"
+"Fingerprint: {fingerprint}\n"
+"{frames} frames, {qr} QR codes read, {unreadable} unreadable."
+msgstr ""
+"Done: “{name}” saved ({size} bytes).\n"
+"Signed by: {signer}\n"
+"Fingerprint: {fingerprint}\n"
+"{frames} frames, {qr} QR codes read, {unreadable} unreadable."
+
+#: src/qrvideo_gui/errors.py:88
+msgid "Download from YouTube failed: {error}"
+msgstr "Download from YouTube failed: {error}"
+
+#: src/qrvideo_gui/handshake.py:133
+#: src/qrvideo_gui/handshake.py:171
+#: src/qrvideo_gui/send.py:110
+msgid "Encrypting and signing …"
+msgstr "Encrypting and signing …"
+
+#: src/qrvideo_gui/errors.py:34
+msgid "Encrypting or signing was not possible. Does the chosen signing key belong to you (private key present) and was the passphrase entered?"
+msgstr "Encrypting or signing was not possible. Does the chosen signing key belong to you (private key present) and was the passphrase entered?"
+
+#: src/qrvideo/crypto.py:134
+msgid "Encryption failed: {status}"
+msgstr "Encryption failed: {status}"
+
+#: src/qrvideo/cli.py:304
+msgid "Error: {error}"
+msgstr "Error: {error}"
+
+#: src/qrvideo/handshake.py:99
+msgid "Field 'selection' missing"
+msgstr "Field 'selection' missing"
+
+#: src/qrvideo/handshake.py:57
+msgid "Field {name!r} must be a list of texts (at most {limit})"
+msgstr "Field {name!r} must be a list of texts (at most {limit})"
+
+#: src/qrvideo_gui/handshake.py:112
+msgid "File exists"
+msgstr "File exists"
+
+#: src/qrvideo_gui/errors.py:58
+msgid "File not found"
+msgstr "File not found"
+
+#: src/qrvideo_gui/errors.py:48
+msgid "File not found: {name}"
+msgstr "File not found: {name}"
+
+#: src/qrvideo_gui/errors.py:63
+msgid "File or system error: {detail}"
+msgstr "File or system error: {detail}"
+
+#: src/qrvideo_gui/errors.py:53
+msgid "File or system error: {name}: {detail}"
+msgstr "File or system error: {name}: {detail}"
+
+#: src/qrvideo/qrpng.py:159
+msgid "Finder pattern at the top left not recognisable"
+msgstr "Finder pattern at the top left not recognisable"
+
+#: src/qrvideo_gui/app.py:54
+msgid "Fingerprint"
+msgstr "Fingerprint"
+
+#: src/qrvideo_gui/handshake_view.py:75
+#: src/qrvideo_gui/handshake_view.py:153
+msgid "Folder with the offered files"
+msgstr "Folder with the offered files"
+
+#: src/qrvideo_gui/send.py:34
+msgid "Frame"
+msgstr "Frame"
+
+#: src/qrvideo/container.py:78
+msgid "Frame count {count} above the limit {limit}"
+msgstr "Frame count {count} above the limit {limit}"
+
+#: src/qrvideo/container.py:75
+msgid "Frame index {index} outside {count}"
+msgstr "Frame index {index} outside {count}"
+
+#: src/qrvideo_gui/receive.py:48
+msgid "Frames read:"
+msgstr "Frames read:"
+
+#: src/qrvideo_gui/errors.py:27
+msgid "GnuPG is not installed. Please install Gpg4win (https://gpg4win.org) and restart."
+msgstr "GnuPG is not installed. Please install Gpg4win (https://gpg4win.org) and restart."
+
+#: src/qrvideo_gui/errors.py:40
+msgid "GnuPG reports an error: {error}"
+msgstr "GnuPG reports an error: {error}"
+
+#: src/qrvideo/container.py:87
+msgid "Group k={k}, m={m} invalid (k >= 1, k + m <= {limit})"
+msgstr "Group k={k}, m={m} invalid (k >= 1, k + m <= {limit})"
+
+#: src/qrvideo/decoder.py:104
+msgid "Group {number}: {error}"
+msgstr "Group {number}: {error}"
+
+#: src/qrvideo_gui/app.py:132
+msgid "Handshake"
+msgstr "Handshake"
+
+#: src/qrvideo_gui/handshake_view.py:189
+msgid "Handshake running …"
+msgstr "Handshake running …"
+
+#: src/qrvideo_gui/receive_view.py:24
+msgid "If in doubt, compare the fingerprint with the sender by phone."
+msgstr "If in doubt, compare the fingerprint with the sender by phone."
+
+#: src/qrvideo/qrpng.py:131
+msgid "Image data does not match the size {width}x{height}"
+msgstr "Image data does not match the size {width}x{height}"
+
+#: src/qrvideo/handshake.py:79
+msgid "Invalid selection {value!r}: {error}"
+msgstr "Invalid selection {value!r}: {error}"
+
+#: src/qrvideo/handshake.py:68
+msgid "Invalid video {value!r}: {error}"
+msgstr "Invalid video {value!r}: {error}"
+
+#: src/qrvideo_gui/app.py:133
+msgid "Keys"
+msgstr "Keys"
+
+#: src/qrvideo_gui/app.py:150
+msgid "Language"
+msgstr "Language"
+
+#: src/qrvideo_gui/app.py:160
+msgid "Language saved: {name}. It takes effect after a restart."
+msgstr "Language saved: {name}. It takes effect after a restart."
+
+#: src/qrvideo/container.py:90
+msgid "Length {length} does not fit into {count} frames"
+msgstr "Length {length} does not fit into {count} frames"
+
+#: src/qrvideo/container.py:134
+msgid "Length {length} instead of {expected}"
+msgstr "Length {length} instead of {expected}"
+
+#: src/qrvideo_gui/app.py:80
+msgid "Loading keys …"
+msgstr "Loading keys …"
+
+#: src/qrvideo_gui/receive.py:41
+msgid "Loading the video from YouTube …"
+msgstr "Loading the video from YouTube …"
+
+#: src/qrvideo_gui/receive.py:42
+msgid "Loading the video from the channel folder …"
+msgstr "Loading the video from the channel folder …"
+
+#: src/qrvideo_gui/receive.py:152
+msgid "Loading the video from {name} …"
+msgstr "Loading the video from {name} …"
+
+#: src/qrvideo_gui/receive_view.py:128
+#: src/qrvideo_gui/send_view.py:97
+msgid "MP4 video"
+msgstr "MP4 video"
+
+#: src/qrvideo_gui/handshake_view.py:45
+msgid "Message"
+msgstr "Message"
+
+#: src/qrvideo_gui/handshake_view.py:113
+msgid "Message (.asc or QR code image .png)"
+msgstr "Message (.asc or QR code image .png)"
+
+#: src/qrvideo/crypto.py:161
+msgid "Message is not validly signed"
+msgstr "Message is not validly signed"
+
+#: src/qrvideo/crypto.py:157
+msgid "Message is not validly signed ({count} signatures)"
+msgstr "Message is not validly signed ({count} signatures)"
+
+#: src/qrvideo_gui/handshake_view.py:163
+msgid "Message or QR code"
+msgstr "Message or QR code"
+
+#: src/qrvideo_gui/app.py:68
+msgid "Name"
+msgstr "Name"
+
+#: src/qrvideo/youtube.py:53
+msgid "No YouTube video ID recognised: {text!r}"
+msgstr "No YouTube video ID recognised: {text!r}"
+
+#: src/qrvideo_gui/errors.py:62
+msgid "No access. Is the file open in another program?"
+msgstr "No access. Is the file open in another program?"
+
+#: src/qrvideo_gui/errors.py:52
+msgid "No access: {name}. Is the file open in another program?"
+msgstr "No access: {name}. Is the file open in another program?"
+
+#: src/qrvideo_gui/errors.py:80
+msgid "No complete data was found in the video ({error}). Is it a 1080p video made with qrvideo?"
+msgstr "No complete data was found in the video ({error}). Is it a 1080p video made with qrvideo?"
+
+#: src/qrvideo/qrpng.py:153
+msgid "No dark module in the image"
+msgstr "No dark module in the image"
+
+#: src/qrvideo/channel.py:119
+msgid "No free name in the channel folder {path}"
+msgstr "No free name in the channel folder {path}"
+
+#: src/qrvideo/decoder.py:138
+msgid "No readable header (v2/v3) in the video"
+msgstr "No readable header (v2/v3) in the video"
+
+#: src/qrvideo_gui/widgets.py:66
+msgid "No trusted keys found (“Keys” tab)."
+msgstr "No trusted keys found (“Keys” tab)."
+
+#: src/qrvideo_gui/widgets.py:51
+msgid "No trusted keys loaded yet (“Keys” tab)."
+msgstr "No trusted keys loaded yet (“Keys” tab)."
+
+#: src/qrvideo/handshake.py:88
+msgid "Not JSON"
+msgstr "Not JSON"
+
+#: src/qrvideo/channel.py:174
+msgid "Not a file name in the channel folder: {text!r}"
+msgstr "Not a file name in the channel folder: {text!r}"
+
+#: src/qrvideo/channel.py:188
+msgid "Not a reference of the form <channel>:<reference> (channel: {names}): {text!r}"
+msgstr "Not a reference of the form <channel>:<reference> (channel: {names}): {text!r}"
+
+#: src/qrvideo/container.py:69
+msgid "Not a v2 or v3 header"
+msgstr "Not a v2 or v3 header"
+
+#: src/qrvideo_gui/receive.py:131
+msgid "Not a valid reference for the channel {name}."
+msgstr "Not a valid reference for the channel {name}."
+
+#: src/qrvideo/channel.py:100
+msgid "Not in the channel folder: {path}"
+msgstr "Not in the channel folder: {path}"
+
+#: src/qrvideo/videoio.py:114
+msgid "Note: the bundled FFmpeg {version} is older than {major}; for videos from the internet set IMAGEIO_FFMPEG_EXE to a current FFmpeg."
+msgstr "Note: the bundled FFmpeg {version} is older than {major}; for videos from the internet set IMAGEIO_FFMPEG_EXE to a current FFmpeg."
+
+#: src/qrvideo/cli.py:193
+msgid "Note: {notice}"
+msgstr "Note: {notice}"
+
+#: src/qrvideo_gui/send.py:35
+msgid "Now upload the video in YouTube Studio (studio.youtube.com) and set its visibility to “Unlisted”. Send the link to the recipient by another route."
+msgstr "Now upload the video in YouTube Studio (studio.youtube.com) and set its visibility to “Unlisted”. Send the link to the recipient by another route."
+
+#: src/qrvideo/cli.py:273
+msgid "OAuth client from the Google Cloud Console (YouTube only)"
+msgstr "OAuth client from the Google Cloud Console (YouTube only)"
+
+#: src/qrvideo/qrpng.py:118
+msgid "Only 8-bit PNG in grey, RGB or RGBA without interlacing"
+msgstr "Only 8-bit PNG in grey, RGB or RGBA without interlacing"
+
+#: src/qrvideo_gui/handshake_view.py:114
+msgid "Open"
+msgstr "Open"
+
+#: src/qrvideo_gui/handshake_view.py:68
+msgid "Open and answer a message"
+msgstr "Open and answer a message"
+
+#: src/qrvideo_gui/receive_view.py:103
+#: src/qrvideo_gui/send_view.py:62
+msgid "Open folder"
+msgstr "Open folder"
+
+#: src/qrvideo_gui/handshake_view.py:162
+msgid "Open message"
+msgstr "Open message"
+
+#: src/qrvideo_gui/send_view.py:120
+msgid "Overwrite video?"
+msgstr "Overwrite video?"
+
+#: src/qrvideo_gui/handshake_view.py:175
+msgid "Overwrite?"
+msgstr "Overwrite?"
+
+#: src/qrvideo/qrpng.py:98
+msgid "PNG chunk {kind!r}: wrong CRC"
+msgstr "PNG chunk {kind!r}: wrong CRC"
+
+#: src/qrvideo/qrpng.py:128
+msgid "PNG data damaged: {error}"
+msgstr "PNG data damaged: {error}"
+
+#: src/qrvideo/qrpng.py:120
+msgid "PNG too large or empty: {width}x{height} (at most {limit}x{limit})"
+msgstr "PNG too large or empty: {width}x{height} (at most {limit}x{limit})"
+
+#: src/qrvideo/qrpng.py:90
+#: src/qrvideo/qrpng.py:94
+msgid "PNG truncated"
+msgstr "PNG truncated"
+
+#: src/qrvideo/qrpng.py:115
+msgid "PNG without a valid IHDR"
+msgstr "PNG without a valid IHDR"
+
+#: src/qrvideo_gui/receive.py:46
+msgid "Please choose a video file or enter a file name from the channel folder."
+msgstr "Please choose a video file or enter a file name from the channel folder."
+
+#: src/qrvideo_gui/receive.py:45
+msgid "Please choose a video file or paste a YouTube link."
+msgstr "Please choose a video file or paste a YouTube link."
+
+#: src/qrvideo_gui/handshake.py:166
+msgid "Please choose an entry from the list."
+msgstr "Please choose an entry from the list."
+
+#: src/qrvideo_gui/receive.py:91
+msgid "Please choose an existing channel folder."
+msgstr "Please choose an existing channel folder."
+
+#: src/qrvideo_gui/send.py:72
+msgid "Please choose an existing file to send."
+msgstr "Please choose an existing file to send."
+
+#: src/qrvideo_gui/receive.py:143
+msgid "Please choose an existing output folder."
+msgstr "Please choose an existing output folder."
+
+#: src/qrvideo_gui/handshake.py:128
+msgid "Please choose the folder with the offered files."
+msgstr "Please choose the folder with the offered files."
+
+#: src/qrvideo_gui/handshake.py:72
+#: src/qrvideo_gui/send.py:76
+msgid "Please choose your own signing key."
+msgstr "Please choose your own signing key."
+
+#: src/qrvideo_gui/errors.py:39
+msgid "Please tick at least one recipient whose key you fully trust."
+msgstr "Please tick at least one recipient whose key you fully trust."
+
+#: src/qrvideo_gui/handshake.py:70
+#: src/qrvideo_gui/send.py:74
+msgid "Please tick at least one recipient."
+msgstr "Please tick at least one recipient."
+
+#: src/qrvideo_gui/handshake_view.py:78
+msgid "Published videos (YouTube link or folder:<file name>, one per line, optional)"
+msgstr "Published videos (YouTube link or folder:<file name>, one per line, optional)"
+
+#: src/qrvideo/crypto.py:80
+msgid "QRVIDEO_GPG does not point to a file: {path}"
+msgstr "QRVIDEO_GPG does not point to a file: {path}"
+
+#: src/qrvideo_gui/receive.py:155
+msgid "Reading frames …"
+msgstr "Reading frames …"
+
+#: src/qrvideo_gui/app.py:120
+#: src/qrvideo_gui/handshake_view.py:186
+#: src/qrvideo_gui/receive_view.py:191
+#: src/qrvideo_gui/send_view.py:166
+msgid "Ready"
+msgstr "Ready"
+
+#: src/qrvideo_gui/app.py:131
+#: src/qrvideo_gui/receive_view.py:94
+msgid "Receive"
+msgstr "Receive"
+
+#: src/qrvideo_gui/receive_view.py:162
+msgid "Receiving …"
+msgstr "Receiving …"
+
+#: src/qrvideo_gui/handshake_view.py:84
+msgid "Recipients"
+msgstr "Recipients"
+
+#: src/qrvideo/crypto.py:112
+msgid "Recipients missing or not trusted: {keys}"
+msgstr "Recipients missing or not trusted: {keys}"
+
+#: src/qrvideo_gui/app.py:75
+msgid "Reload"
+msgstr "Reload"
+
+#: src/qrvideo_gui/handshake_view.py:227
+msgid ""
+"Response – the choice was: “{selection}”\n"
+"{sender}"
+msgstr ""
+"Response – the choice was: “{selection}”\n"
+"{sender}"
+
+#: src/qrvideo/container.py:137
+msgid "SHA-256 of the payload does not match"
+msgstr "SHA-256 of the payload does not match"
+
+#: src/qrvideo_gui/handshake_view.py:94
+msgid "Save as (.asc)"
+msgstr "Save as (.asc)"
+
+#: src/qrvideo_gui/send_view.py:49
+msgid "Save as …"
+msgstr "Save as …"
+
+#: src/qrvideo_gui/handshake_view.py:96
+msgid "Save challenge"
+msgstr "Save challenge"
+
+#: src/qrvideo_gui/handshake_view.py:130
+msgid "Save response"
+msgstr "Save response"
+
+#: src/qrvideo_gui/handshake_view.py:128
+msgid "Save the answer as (.asc)"
+msgstr "Save the answer as (.asc)"
+
+#: src/qrvideo_gui/handshake_view.py:136
+msgid "Save the choice as a response"
+msgstr "Save the choice as a response"
+
+#: src/qrvideo_gui/handshake.py:141
+msgid "Saved: {target} and {png} – offer with {files} and {videos}."
+msgstr "Saved: {target} and {png} – offer with {files} and {videos}."
+
+#: src/qrvideo_gui/handshake.py:174
+msgid "Saved: {target} – answer “{choice}” to {name}."
+msgstr "Saved: {target} – answer “{choice}” to {name}."
+
+#: src/qrvideo_gui/handshake.py:143
+msgid "Saved: {target} – offer with {files} and {videos}."
+msgstr "Saved: {target} – offer with {files} and {videos}."
+
+#: src/qrvideo/cli_handshake.py:64
+msgid "Selection {number} outside 0..{last}"
+msgstr "Selection {number} outside 0..{last}"
+
+#: src/qrvideo/cli_handshake.py:83
+msgid "Selection: {selection}"
+msgstr "Selection: {selection}"
+
+#: src/qrvideo_gui/app.py:130
+#: src/qrvideo_gui/send_view.py:53
+msgid "Send"
+msgstr "Send"
+
+#: src/qrvideo_gui/send_view.py:129
+msgid "Sending …"
+msgstr "Sending …"
+
+#: src/qrvideo_gui/receive_view.py:18
+msgid "Shared folder"
+msgstr "Shared folder"
+
+#: src/qrvideo_gui/handshake_view.py:121
+msgid "Sign the answer with"
+msgstr "Sign the answer with"
+
+#: src/qrvideo_gui/handshake_view.py:87
+msgid "Sign with"
+msgstr "Sign with"
+
+#: src/qrvideo/crypto.py:154
+msgid "Signature problem: {status}"
+msgstr "Signature problem: {status}"
+
+#: src/qrvideo/cli_handshake.py:77
+msgid "Signed by {name} ({fingerprint})"
+msgstr "Signed by {name} ({fingerprint})"
+
+#: src/qrvideo_gui/handshake_view.py:223
+msgid ""
+"Signed by: {name}\n"
+"Fingerprint: {fingerprint}"
+msgstr ""
+"Signed by: {name}\n"
+"Fingerprint: {fingerprint}"
+
+#: src/qrvideo/crypto.py:163
+msgid "Signing key {keyid} is not fully trusted"
+msgstr "Signing key {keyid} is not fully trusted"
+
+#: src/qrvideo_gui/send_view.py:95
+msgid "Target video"
+msgstr "Target video"
+
+#: src/qrvideo_gui/send.py:108
+msgid "Target video exists"
+msgstr "Target video exists"
+
+#: src/qrvideo_gui/app.py:186
+msgid "Task running"
+msgstr "Task running"
+
+#: src/qrvideo_gui/errors.py:22
+msgid "Technical details are in the console window."
+msgstr "Technical details are in the console window."
+
+#: src/qrvideo_gui/receive.py:89
+msgid "The browser sign-in only applies to YouTube."
+msgstr "The browser sign-in only applies to YouTube."
+
+#: src/qrvideo_gui/errors.py:71
+msgid "The data does not come from a trusted sender or the signature is invalid. Nothing was saved. Details: {error}"
+msgstr "The data does not come from a trusted sender or the signature is invalid. Nothing was saved. Details: {error}"
+
+#: src/qrvideo/youtube.py:80
+msgid "The download produced no file: {path}"
+msgstr "The download produced no file: {path}"
+
+#: src/qrvideo_gui/errors.py:60
+msgid "The file already exists"
+msgstr "The file already exists"
+
+#: src/qrvideo_gui/errors.py:50
+msgid "The file already exists: {name}"
+msgstr "The file already exists: {name}"
+
+#: src/qrvideo/cli_handshake.py:61
+msgid "The file does not contain a challenge"
+msgstr "The file does not contain a challenge"
+
+#: src/qrvideo_gui/errors.py:78
+msgid "The file is not a valid handshake message ({error})."
+msgstr "The file is not a valid handshake message ({error})."
+
+#: src/qrvideo/channel.py:165
+msgid "The folder channel needs --folder"
+msgstr "The folder channel needs --folder"
+
+#: src/qrvideo_gui/handshake_view.py:27
+msgid "The handshake settles in advance what will be transferred: the provider sends an encrypted offer (challenge), the recipient answers with a choice (response). Both messages travel as text (.asc) or as a QR code image (.png) over any channel."
+msgstr "The handshake settles in advance what will be transferred: the provider sends an encrypted offer (challenge), the recipient answers with a choice (response). Both messages travel as text (.asc) or as a QR code image (.png) over any channel."
+
+#: src/qrvideo_gui/app.py:158
+msgid "The language could not be saved: {error}"
+msgstr "The language could not be saved: {error}"
+
+#: src/qrvideo_gui/handshake.py:74
+msgid "The message must end in {suffix}."
+msgstr "The message must end in {suffix}."
+
+#: src/qrvideo_gui/handshake.py:164
+msgid "The opened message is not a challenge – there is nothing to answer."
+msgstr "The opened message is not a challenge – there is nothing to answer."
+
+#: src/qrvideo_gui/send.py:78
+msgid "The target video must end in {suffix}."
+msgstr "The target video must end in {suffix}."
+
+#: src/qrvideo_gui/send.py:80
+msgid "The target video must not be the source file."
+msgstr "The target video must not be the source file."
+
+#: src/qrvideo_gui/app.py:39
+msgid "These are all the keys you fully trust. You can only send to these people, and only videos signed by one of them are accepted. Import and certify keys with Kleopatra (part of Gpg4win), then click “Reload” here."
+msgstr "These are all the keys you fully trust. You can only send to these people, and only videos signed by one of them are accepted. Import and certify keys with Kleopatra (part of Gpg4win), then click “Reload” here."
+
+#: src/qrvideo/cli.py:197
+msgid "Transfer files as a QR code video"
+msgstr "Transfer files as a QR code video"
+
+#: src/qrvideo_gui/app.py:53
+msgid "Trust"
+msgstr "Trust"
+
+#: src/qrvideo_gui/errors.py:89
+msgid "Unexpected error. {hint}"
+msgstr "Unexpected error. {hint}"
+
+#: src/qrvideo/qrpng.py:81
+msgid "Unknown PNG filter"
+msgstr "Unknown PNG filter"
+
+#: src/qrvideo/youtube.py:39
+msgid "Unknown browser or invalid profile {text!r} (browsers: {names})"
+msgstr "Unknown browser or invalid profile {text!r} (browsers: {names})"
+
+#: src/qrvideo_gui/receive.py:49
+msgid "Unknown browser “{browser}”. Allowed: {names}, optionally with “:profile”."
+msgstr "Unknown browser “{browser}”. Allowed: {names}, optionally with “:profile”."
+
+#: src/qrvideo/channel.py:167
+msgid "Unknown channel {name!r} (allowed: {names})"
+msgstr "Unknown channel {name!r} (allowed: {names})"
+
+#: src/qrvideo_gui/receive.py:95
+msgid "Unknown channel “{name}”."
+msgstr "Unknown channel “{name}”."
+
+#: src/qrvideo/handshake.py:91
+msgid "Unknown format version: {version!r}"
+msgstr "Unknown format version: {version!r}"
+
+#: src/qrvideo/handshake.py:101
+msgid "Unknown message kind: {kind!r}"
+msgstr "Unknown message kind: {kind!r}"
+
+#: src/qrvideo/channel.py:78
+msgid "Uploading to YouTube needs --client-secrets (OAuth client, Google Cloud)"
+msgstr "Uploading to YouTube needs --client-secrets (OAuth client, Google Cloud)"
+
+#: src/qrvideo_gui/receive_view.py:18
+msgid "YouTube"
+msgstr "YouTube"
+
+#: src/qrvideo/cli.py:259
+msgid "YouTube URL or video ID, or file name in the channel folder"
+msgstr "YouTube URL or video ID, or file name in the channel folder"
+
+#: src/qrvideo/channel.py:129
+msgid "YouTube saved the video as \"{privacy}\" (usual for unverified API projects). Release it in YouTube Studio or fetch it with an authorised account: qrvideo download <ID> --cookies-from-browser <browser>"
+msgstr "YouTube saved the video as \"{privacy}\" (usual for unverified API projects). Release it in YouTube Studio or fetch it with an authorised account: qrvideo download <ID> --cookies-from-browser <browser>"
+
+#: src/qrvideo/cli.py:275
+msgid "YouTube title (default: random)"
+msgstr "YouTube title (default: random)"
+
+#: src/qrvideo_gui/handshake_view.py:98
+#: src/qrvideo_gui/handshake_view.py:132
+msgid "also as a QR code image (.png)"
+msgstr "also as a QR code image (.png)"
+
+#: src/qrvideo/cli_handshake.py:101
+#: src/qrvideo/cli_handshake.py:110
+msgid "also save as a QR code image"
+msgstr "also save as a QR code image"
+
+#: src/qrvideo/cli.py:52
+msgid "argument %(argument_name)s: %(message)s"
+msgstr "argument %(argument_name)s: %(message)s"
+
+#: src/qrvideo/cli.py:254
+msgid "channel (default youtube)"
+msgstr "channel (default youtube)"
+
+#: src/qrvideo/cli_handshake.py:104
+msgid "client response: choose an entry from a challenge"
+msgstr "client response: choose an entry from a challenge"
+
+#: src/qrvideo/cli.py:242
+msgid "decode a video, decrypt, check the signature"
+msgstr "decode a video, decrypt, check the signature"
+
+#: src/qrvideo/cli_handshake.py:113
+msgid "decrypt and show a challenge or response (.asc or QR PNG)"
+msgstr "decrypt and show a challenge or response (.asc or QR PNG)"
+
+#: src/qrvideo/cli_handshake.py:108
+msgid "default: sender of the challenge"
+msgstr "default: sender of the challenge"
+
+#: src/qrvideo/cli.py:220
+msgid "encode a file (e.g. .gpg) as a video"
+msgstr "encode a file (e.g. .gpg) as a video"
+
+#: src/qrvideo/cli.py:232
+msgid "encrypt, sign and encode as a video"
+msgstr "encrypt, sign and encode as a video"
+
+#: src/qrvideo/cli.py:207
+msgid "error correction per QR code (default L)"
+msgstr "error correction per QR code (default L)"
+
+#: src/qrvideo/cli.py:55
+msgid "expected one argument"
+msgstr "expected one argument"
+
+#: src/qrvideo/cli.py:258
+msgid "fetch a video from the channel (YouTube via yt-dlp, or folder)"
+msgstr "fetch a video from the channel (YouTube via yt-dlp, or folder)"
+
+#: src/qrvideo/cli_handshake.py:90
+msgid "folder with the offered files"
+msgstr "folder with the offered files"
+
+#: src/qrvideo_gui/keys.py:19
+msgid "full"
+msgstr "full"
+
+#: src/qrvideo/crypto.py:90
+msgid "gpg not found: install GnuPG or set QRVIDEO_GPG"
+msgstr "gpg not found: install GnuPG or set QRVIDEO_GPG"
+
+#: src/qrvideo/cli.py:54
+msgid "invalid %(type)s value: %(value)r"
+msgstr "invalid %(type)s value: %(value)r"
+
+#: src/qrvideo/cli.py:53
+msgid "invalid choice: %(value)r (choose from %(choices)s)"
+msgstr "invalid choice: %(value)r (choose from %(choices)s)"
+
+#: src/qrvideo/cli.py:235
+msgid "key ID/fingerprint, may be repeated"
+msgstr "key ID/fingerprint, may be repeated"
+
+#: src/qrvideo_gui/app.py:200
+msgid "language of the interface (default: QRVIDEO_LANG, the saved choice, the system language)"
+msgstr "language of the interface (default: QRVIDEO_LANG, the saved choice, the system language)"
+
+#: src/qrvideo/cli.py:285
+msgid "language of the output (default: QRVIDEO_LANG, otherwise the system language)"
+msgstr "language of the output (default: QRVIDEO_LANG, otherwise the system language)"
+
+#: src/qrvideo/crypto.py:111
+msgid "none given"
+msgstr "none given"
+
+#: src/qrvideo/cli_handshake.py:106
+msgid "number from 'qrvideo inspect'"
+msgstr "number from 'qrvideo inspect'"
+
+#: src/qrvideo_gui/receive_view.py:23
+msgid "optional, e.g. firefox or chrome:Profile 1"
+msgstr "optional, e.g. firefox or chrome:Profile 1"
+
+#: src/qrvideo/cli.py:47
+msgid "options"
+msgstr "options"
+
+#: src/qrvideo/cli.py:245
+msgid "overwrite an existing target file"
+msgstr "overwrite an existing target file"
+
+#: src/qrvideo/cli.py:212
+msgid "overwrite an existing target video"
+msgstr "overwrite an existing target video"
+
+#: src/qrvideo/cli.py:198
+#: src/qrvideo_gui/app.py:196
+msgid "own GnuPG keyring (default: the user's)"
+msgstr "own GnuPG keyring (default: the user's)"
+
+#: src/qrvideo/cli.py:217
+msgid "percent parity QR codes per 10 frames (default 10, format v3); 0 = format v2"
+msgstr "percent parity QR codes per 10 frames (default 10, format v3); 0 = format v2"
+
+#: src/qrvideo/cli.py:46
+msgid "positional arguments"
+msgstr "positional arguments"
+
+#: src/qrvideo/channel.py:138
+msgid "private"
+msgstr "private"
+
+#: src/qrvideo/cli.py:211
+msgid "processes for rendering (default: all cores)"
+msgstr "processes for rendering (default: all cores)"
+
+#: src/qrvideo/channel.py:138
+msgid "public"
+msgstr "public"
+
+#: src/qrvideo/cli.py:270
+msgid "publish a video (YouTube unlisted, or folder)"
+msgstr "publish a video (YouTube unlisted, or folder)"
+
+#: src/qrvideo/cli_handshake.py:96
+msgid "published video: <channel>:<reference> (e.g. folder:<file>) or YouTube link, may be repeated"
+msgstr "published video: <channel>:<reference> (e.g. folder:<file>) or YouTube link, may be repeated"
+
+#: src/qrvideo_gui/app.py:33
+msgid "qrvideo – transfer files as a QR code video"
+msgstr "qrvideo – transfer files as a QR code video"
+
+#: src/qrvideo/cli_handshake.py:89
+msgid "server challenge: offer of files, encrypted for recipients"
+msgstr "server challenge: offer of files, encrypted for recipients"
+
+#: src/qrvideo/cli.py:256
+msgid "shared folder for --channel folder"
+msgstr "shared folder for --channel folder"
+
+#: src/qrvideo/cli.py:48
+msgid "show this help message and exit"
+msgstr "show this help message and exit"
+
+#: src/qrvideo/cli.py:248
+msgid "show trusted keys"
+msgstr "show trusted keys"
+
+#: src/qrvideo/cli.py:49
+msgid "the following arguments are required: %s"
+msgstr "the following arguments are required: %s"
+
+#: src/qrvideo/cli.py:226
+msgid "turn a video back into the file"
+msgstr "turn a video back into the file"
+
+#: src/qrvideo_gui/keys.py:19
+msgid "ultimate (own key)"
+msgstr "ultimate (own key)"
+
+#: src/qrvideo/cli.py:51
+msgid "unrecognized arguments: %s"
+msgstr "unrecognized arguments: %s"
+
+#: src/qrvideo/cli.py:45
+msgid "usage: "
+msgstr "usage: "
+
+#: src/qrvideo/cli.py:266
+msgid "use the browser's sign-in, e.g. for private videos (YouTube only, locally via yt-dlp)"
+msgstr "use the browser's sign-in, e.g. for private videos (YouTube only, locally via yt-dlp)"
+
+#: src/qrvideo/cli.py:229
+msgid "video in the 2019 thesis format"
+msgstr "video in the 2019 thesis format"
+
+#: src/qrvideo/cli.py:209
+msgid "x264 quality, 0 = lossless (default 12)"
+msgstr "x264 quality, 0 = lossless (default 12)"
+
+#: src/qrvideo/cli.py:237
+msgid "your own signing key"
+msgstr "your own signing key"
+
+#: src/qrvideo/decoder.py:156
+msgid "{count} QR codes unreadable, first: frame {frame}, slot {slot}"
+msgstr "{count} QR codes unreadable, first: frame {frame}, slot {slot}"
+
+#: src/qrvideo/container.py:130
+msgid "{count} chunks missing, first missing: {first}"
+msgstr "{count} chunks missing, first missing: {first}"
+
+#: src/qrvideo_gui/handshake.py:138
+msgid "{count} file"
+msgid_plural "{count} files"
+msgstr[0] "{count} file"
+msgstr[1] "{count} files"
+
+#: src/qrvideo_gui/app.py:89
+msgid "{count} trusted keys"
+msgstr "{count} trusted keys"
+
+#: src/qrvideo_gui/handshake.py:139
+msgid "{count} video"
+msgid_plural "{count} videos"
+msgstr[0] "{count} video"
+msgstr[1] "{count} videos"
+
+#: src/qrvideo/cli.py:64
+msgid "{frames} frames, {qr} QR codes read, {blank} empty, {corrected} bytes corrected by Reed-Solomon, {failed} unreadable"
+msgstr "{frames} frames, {qr} QR codes read, {blank} empty, {corrected} bytes corrected by Reed-Solomon, {failed} unreadable"
+
+#: src/qrvideo/erasure.py:90
+msgid "{missing} data symbols missing, only {parity} parity symbols present"
+msgstr "{missing} data symbols missing, only {parity} parity symbols present"
+
+#: src/qrvideo_gui/handshake_view.py:174
+msgid "{names} already exist(s). Overwrite?"
+msgstr "{names} already exist(s). Overwrite?"
+
+#: src/qrvideo_gui/widgets.py:62
+msgid "{name}   ({keyid})"
+msgstr "{name}   ({keyid})"
+
+#: src/qrvideo_gui/widgets.py:62
+msgid "{name}   ({keyid}, own key)"
+msgstr "{name}   ({keyid}, own key)"
+
+#: src/qrvideo/channel.py:105
+msgid "{path} already exists"
+msgstr "{path} already exists"
+
+#: src/qrvideo/cli.py:88
+#: src/qrvideo/cli.py:151
+msgid "{path} already exists (--force to overwrite)"
+msgstr "{path} already exists (--force to overwrite)"
+
+#: src/qrvideo/qrpng.py:112
+msgid "{path} is not a PNG file"
+msgstr "{path} is not a PNG file"
+
+#: src/qrvideo/cli_handshake.py:40
+msgid "{path}: QR code"
+msgstr "{path}: QR code"
+
+#: src/qrvideo/cli_handshake.py:51
+msgid "{path}: challenge with {files} files and {videos} videos"
+msgstr "{path}: challenge with {files} files and {videos} videos"
+
+#: src/qrvideo/cli_handshake.py:69
+msgid "{path}: response to {name}: {choice}"
+msgstr "{path}: response to {name}: {choice}"
+
+#: src/qrvideo/cli.py:111
+msgid "{path}: {frames} frames ({seconds} s)"
+msgstr "{path}: {frames} frames ({seconds} s)"
+
+#: src/qrvideo/cli.py:127
+msgid "{path}: {size} bytes"
+msgstr "{path}: {size} bytes"
+
+#: src/qrvideo/cli.py:153
+msgid "{path}: {size} bytes, signed by {name} ({fingerprint})"
+msgstr "{path}: {size} bytes, signed by {name} ({fingerprint})"
+
+#: src/qrvideo_gui/widgets.py:111
+msgid "{what} {done} of {total}"
+msgstr "{what} {done} of {total}"
+
+#: src/qrvideo_gui/send_view.py:121
+msgid "“{name}” already exists. Overwrite it?"
+msgstr "“{name}” already exists. Overwrite it?"
+
+#: src/qrvideo_gui/handshake.py:86
+msgid "“{video}” is neither a YouTube link nor a reference like folder:<file name>."
+msgstr "“{video}” is neither a YouTube link nor a reference like folder:<file name>."

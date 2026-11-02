@@ -85,12 +85,14 @@ src/qrvideo/ → layout (Geometrie), container (Format v2 ADR-001, v3 ADR-003), 
                crypto (GnuPG, Vertrauen per Exception), channel (Kanal-Schnittstelle, YouTube- und Ordner-Kanal, ADR-005),
                youtube (yt-dlp, Upload-API), paths (sichere Dateinamen),
                handshake (Server Challenge / Client Response), qrpng (PNG ohne Bildbibliothek, QR-PNG lesen),
-               errors (`ContainerError`, seit I26), cli (Befehl `qrvideo`: encode, decode, send, receive, keys, download,
+               errors (`ContainerError`, seit I26), i18n (Sprache, `_`/`ngettext`, Zahlenformat; Kataloge in
+               `locale/<sprache>/LC_MESSAGES/qrvideo.po|.mo`, ADR-006, seit I33c), cli (Befehl `qrvideo`: encode, decode, send, receive, keys, download,
                upload), cli_handshake (challenge, respond, inspect — seit I26 aus cli ausgelagert)
 src/qrvideo_gui/ (ADR-004, Tkinter/ttk, Kernmodule unverändert) → jobs (Hintergrund-Thread, Fortschritt, Abbruch),
-               errors (Ausnahme → deutscher Satz), keys (vertraute Schlüssel, Tk-frei), widgets (Job-Ereignisse im
+               errors (Ausnahme → Satz in der gewählten Sprache), keys (vertraute Schlüssel, Tk-frei), widgets (Job-Ereignisse im
                Tk-Thread), app (Hauptfenster, Befehl `qrvideo-gui`), send + send_view (Reiter „Senden“),
-               receive + receive_view (Reiter „Empfangen“), handshake + handshake_view (Reiter „Handshake“)
+               receive + receive_view (Reiter „Empfangen“), handshake + handshake_view (Reiter „Handshake“),
+               settings (gespeicherte Sprache, Tk-frei, seit I33i)
 POC.py       → Konsolenmenü, GnuPG-Wrapper (QRCrypt), Management-/Handshake-QR-Codes (QRCodeManagement),
                Frame-Zusammenbau, Pool-Rendering, Video-Segmente schreiben
 analyze_video.py → Video → Frames → korrigierte QR-Ausschnitte → dekodierter ASCII-Armor-Text

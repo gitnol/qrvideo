@@ -119,7 +119,7 @@ def test_cli_download_passes_cookies_only_when_asked(
     capsys.readouterr()
     folder = ["--channel", "folder", "--folder", str(tmp_path), "--cookies-from-browser", "firefox"]
     assert main(["download", "qrvideo-0123abcd.mp4", "-d", str(tmp_path / "e"), *folder]) == 1
-    assert "nur fuer YouTube" in capsys.readouterr().err
+    assert "nur für YouTube" in capsys.readouterr().err
 
 
 def test_token_path_outside_program(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
@@ -169,7 +169,7 @@ def test_gpg_lookup_skips_git_bundled_gpg(monkeypatch: pytest.MonkeyPatch, tmp_p
     monkeypatch.delenv("QRVIDEO_GPG", raising=False)
     monkeypatch.setattr("qrvideo.crypto.shutil.which", lambda _: str(git_gpg))
     monkeypatch.setattr(crypto, "WINDOWS_GPG", ())
-    with pytest.raises(crypto.GpgError, match="nicht gefunden"):
+    with pytest.raises(crypto.GpgNotFoundError):
         crypto.find_gpg_binary()
     monkeypatch.setenv("QRVIDEO_GPG", str(git_gpg))
     assert crypto.find_gpg_binary() == str(git_gpg)  # explizite Wahl gewinnt

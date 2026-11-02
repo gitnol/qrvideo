@@ -11,6 +11,8 @@ from pathlib import Path
 from tkinter import ttk
 from typing import Any
 
+from qrvideo.i18n import _, format_number
+
 from .jobs import Event, Failed, Finished, Job, ProgressEvent, WasCancelled
 from .keys import KeyRow, default_signer
 
@@ -46,7 +48,7 @@ class KeyChecklist(ttk.Frame):
     def __init__(self, parent: tk.Misc) -> None:
         super().__init__(parent)
         self._vars: dict[str, tk.BooleanVar] = {}
-        self._empty = ttk.Label(self, text="Noch keine vertrauten Schlüssel geladen (Reiter „Schlüssel“).")
+        self._empty = ttk.Label(self, text=_("No trusted keys loaded yet (“Keys” tab)."))
         self._empty.pack(anchor="w")
 
     def set_rows(self, rows: list[KeyRow]) -> None:
@@ -57,10 +59,11 @@ class KeyChecklist(ttk.Frame):
         for row in rows:
             var = tk.BooleanVar(self, value=row.fingerprint in checked)
             self._vars[row.fingerprint] = var
-            label = f"{row.name}   ({row.keyid}{', eigener Schlüssel' if row.own else ''})"
+            text = _("{name}   ({keyid}, own key)") if row.own else _("{name}   ({keyid})")
+            label = text.format(name=row.name, keyid=row.keyid)
             ttk.Checkbutton(self, text=label, variable=var).pack(anchor="w")
         if not rows:
-            ttk.Label(self, text="Keine vertrauten Schlüssel gefunden (Reiter „Schlüssel“).").pack(anchor="w")
+            ttk.Label(self, text=_("No trusted keys found (“Keys” tab).")).pack(anchor="w")
 
     def checked(self) -> list[str]:
         return [fingerprint for fingerprint, var in self._vars.items() if var.get()]
@@ -105,7 +108,10 @@ class ProgressPanel(ttk.Frame):
         if event.total:
             self.bar.stop()
             self.bar.configure(mode="determinate", maximum=event.total, value=event.done)
-            self.text.set(f"{event.text} {event.done} von {event.total}")
+            text = _("{what} {done} of {total}")
+            self.text.set(
+                text.format(what=event.text, done=format_number(event.done), total=format_number(event.total))
+            )
         else:
             if str(self.bar.cget("mode")) != "indeterminate":
                 self.bar.configure(mode="indeterminate")

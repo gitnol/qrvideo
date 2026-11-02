@@ -18,6 +18,7 @@ import numpy.typing as npt
 from qrcodegenmod._tables import MULTIPLY_TABLE
 
 from .errors import ContainerError
+from .i18n import _
 
 U8 = npt.NDArray[np.uint8]
 FIELD = 256
@@ -34,7 +35,7 @@ def _coefficients(rows: Sequence[int], columns: Sequence[int], m: int) -> U8:
 
 def _symbol_arrays(symbols: Sequence[bytes]) -> list[U8]:
     if len({len(s) for s in symbols}) > 1:
-        raise ValueError("Symbole einer Gruppe muessen gleich lang sein")
+        raise ValueError("Symbols of a group must have the same length")
     return [np.frombuffer(s, dtype=np.uint8) for s in symbols]
 
 
@@ -48,7 +49,7 @@ def _combine(coefficients: U8, vectors: Sequence[U8], size: int) -> U8:
 
 def _check_group(k: int, m: int) -> None:
     if k < 1 or m < 0 or k + m > FIELD:
-        raise ValueError(f"Gruppe k={k}, m={m}: noetig k >= 1, m >= 0, k + m <= {FIELD}")
+        raise ValueError(f"Group k={k}, m={m}: needs k >= 1, m >= 0, k + m <= {FIELD}")
 
 
 def encode_parity(data: Sequence[bytes], m: int) -> list[bytes]:
@@ -86,9 +87,8 @@ def recover(symbols: dict[int, bytes], k: int, m: int) -> list[bytes]:
         return [received[i].tobytes() for i in range(k)]
     parity_rows = [j for j in range(m) if k + j in received]
     if len(parity_rows) < len(missing):
-        raise ContainerError(
-            f"{len(missing)} Datensymbole fehlen, nur {len(parity_rows)} Paritaetssymbole vorhanden"
-        )
+        text = _("{missing} data symbols missing, only {parity} parity symbols present")
+        raise ContainerError(text.format(missing=len(missing), parity=len(parity_rows)))
     rows = parity_rows[: len(missing)]
     known = [i for i in range(k) if i in received]
     size = received[k + rows[0]].size

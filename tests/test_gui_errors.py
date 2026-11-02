@@ -5,7 +5,14 @@ from __future__ import annotations
 import pytest
 
 from qrvideo.container import ContainerError
-from qrvideo.crypto import GpgError, UntrustedSignatureError
+from qrvideo.crypto import (
+    DecryptError,
+    EncryptError,
+    GpgError,
+    GpgNotFoundError,
+    RecipientsError,
+    UntrustedSignatureError,
+)
 from qrvideo.handshake import HandshakeError
 from qrvideo_gui.errors import friendly_message
 from qrvideo_gui.jobs import Cancelled
@@ -18,10 +25,12 @@ from qrvideo_gui.jobs import Cancelled
         (FileNotFoundError(2, "No such file", "bericht.mp4"), "nicht gefunden: bericht.mp4"),
         (PermissionError(13, "Access denied", "ziel.mp4"), "anderen Programm geöffnet"),
         (UntrustedSignatureError("Signaturschluessel ABC ist nicht voll vertraut"), "vertrauten Absender"),
-        (GpgError("gpg nicht gefunden: GnuPG installieren oder QRVIDEO_GPG setzen"), "Gpg4win"),
-        (GpgError("Entschluesseln fehlgeschlagen: decryption failed"), "privater Schlüssel"),
-        (GpgError("Verschluesseln fehlgeschlagen: invalid recipient"), "Signaturschlüssel"),
-        (GpgError("Empfaenger fehlen oder sind nicht vertraut: keine angegeben"), "Empfänger"),
+        # Zuordnung per Klasse, nicht per Wortlaut des Kerns (I33b): der Text ist hier absichtlich fremd
+        (GpgNotFoundError("gpg not found"), "Gpg4win"),
+        (DecryptError("decryption failed"), "privater Schlüssel"),
+        (EncryptError("invalid recipient"), "Signaturschlüssel"),
+        (RecipientsError("none given"), "Empfänger"),
+        (GpgError("gpg nicht gefunden: alter Wortlaut zählt nicht mehr"), "GnuPG meldet einen Fehler"),
         (ContainerError("Kein lesbarer v2-Kopf im Video"), "keine vollständigen Daten"),
         (HandshakeError("Kein JSON"), "keine gültige Handshake-Nachricht"),
         (ValueError("Keine YouTube-Video-ID erkannt: 'x'"), "Keine YouTube-Video-ID"),

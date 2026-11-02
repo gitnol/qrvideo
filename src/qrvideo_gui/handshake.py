@@ -16,6 +16,7 @@ from typing import cast
 from qrvideo.channel import channel_ref
 from qrvideo.crypto import Crypto
 from qrvideo.handshake import Challenge, Response, open_sealed, seal
+from qrvideo.i18n import _, ngettext
 from qrvideo.qrpng import read_qr_png, write_qr_png
 
 from .jobs import Progress
@@ -66,11 +67,11 @@ class SealedResult:
 def _common_problems(recipients: tuple[str, ...], signer: str, target: Path) -> list[str]:
     problems = []
     if not recipients:
-        problems.append("Bitte mindestens einen Empfänger ankreuzen.")
+        problems.append(_("Please tick at least one recipient."))
     if not signer:
-        problems.append("Bitte Ihren eigenen Signaturschlüssel wählen.")
+        problems.append(_("Please choose your own signing key."))
     if target.suffix.lower() != MESSAGE_SUFFIX:
-        problems.append(f"Die Nachricht muss auf {MESSAGE_SUFFIX} enden.")
+        problems.append(_("The message must end in {suffix}.").format(suffix=MESSAGE_SUFFIX))
     return problems
 
 
@@ -82,19 +83,14 @@ def _video_refs(videos: tuple[str, ...]) -> tuple[str, ...]:
         try:
             refs.append(channel_ref(video))
         except ValueError as exc:
-            raise ValueError(
-                f"„{video}“ ist weder ein YouTube-Link noch ein Verweis wie folder:<Dateiname>."
-            ) from exc
+            text = _("“{video}” is neither a YouTube link nor a reference like folder:<file name>.")
+            raise ValueError(text.format(video=video)) from exc
     return tuple(refs)
 
 
 def _read_message(path: Path) -> bytes:
     data = path.read_bytes()
     return read_qr_png(path) if data.startswith(PNG_MAGIC) else data
-
-
-def _plural(count: int, one: str, many: str) -> str:
-    return f"{count} {one if count == 1 else many}"
 
 
 class HandshakePresenter:
@@ -113,7 +109,7 @@ class HandshakePresenter:
     def _write(self, sealed: bytes, target: Path, png: bool, overwrite: bool) -> Path | None:
         existing = self.existing(target, png)
         if existing and not overwrite:
-            raise FileExistsError(17, "Datei existiert", str(existing[0]))
+            raise FileExistsError(17, _("File exists"), str(existing[0]))
         png_path = target.with_suffix(PNG_SUFFIX) if png else None
         if png_path is not None:
             write_qr_png(
@@ -129,25 +125,29 @@ class HandshakePresenter:
     ) -> SealedResult:
         problems = _common_problems(request.recipients, request.signer, request.target)
         if not request.directory.is_dir():
-            problems.insert(0, "Bitte den Ordner mit den angebotenen Dateien wählen.")
+            problems.insert(0, _("Please choose the folder with the offered files."))
         if problems:
             raise ValueError(" ".join(problems))
         videos = _video_refs(request.videos)
         files = tuple(sorted(f.name for f in request.directory.iterdir() if f.is_file()))
-        progress.report(0, None, "Verschlüsseln und signieren …")
+        progress.report(0, None, _("Encrypting and signing …"))
         sealed = seal(
             self._crypto(), Challenge(files, videos), list(request.recipients), request.signer, None
         )
         png = self._write(sealed, request.target, request.png, overwrite)
-        summary = (
-            f"Gespeichert: {request.target.name}{f' und {png.name}' if png else ''} – Angebot mit "
-            f"{_plural(len(files), 'Datei', 'Dateien')} und {_plural(len(videos), 'Video', 'Videos')}."
-        )
+        files_text = ngettext("{count} file", "{count} files", len(files)).format(count=len(files))
+        videos_text = ngettext("{count} video", "{count} videos", len(videos)).format(count=len(videos))
+        if png:
+            text = _("Saved: {target} and {png} – offer with {files} and {videos}.")
+        else:
+            text = _("Saved: {target} – offer with {files} and {videos}.")
+        names = {"target": request.target.name, "png": png.name if png else ""}
+        summary = text.format(files=files_text, videos=videos_text, **names)
         return SealedResult(request.target, png, summary)
 
     def open_message(self, path: Path, progress: Progress) -> OpenedMessage:
         """Entschluesseln nur mit voll vertrauter Signatur (Crypto.decrypt), Inhalt gepruefte Felder."""
-        progress.report(0, None, "Entschlüsseln und Signatur prüfen …")
+        progress.report(0, None, _("Decrypting and checking the signature …"))
         message, signer = open_sealed(self._crypto(), _read_message(path), None)
         if isinstance(message, Challenge):
             entries = (*message.files, *message.videos)
@@ -161,15 +161,16 @@ class HandshakePresenter:
     ) -> SealedResult:
         opened = request.message
         if opened.kind != CHALLENGE:
-            raise ValueError("Die geöffnete Nachricht ist keine Challenge – darauf gibt es keine Antwort.")
+            raise ValueError(_("The opened message is not a challenge – there is nothing to answer."))
         if not 0 <= request.index < len(opened.entries):
-            raise ValueError("Bitte einen Eintrag aus der Liste wählen.")
+            raise ValueError(_("Please choose an entry from the list."))
         problems = _common_problems((opened.signer_fingerprint,), request.signer, request.target)
         if problems:
             raise ValueError(" ".join(problems))
         choice = opened.entries[request.index]
-        progress.report(0, None, "Verschlüsseln und signieren …")
+        progress.report(0, None, _("Encrypting and signing …"))
         sealed = seal(self._crypto(), Response(choice), [opened.signer_fingerprint], request.signer, None)
         png = self._write(sealed, request.target, request.png, overwrite)
-        summary = f"Gespeichert: {request.target.name} – Antwort „{choice}“ an {opened.signer_name}."
+        text = _("Saved: {target} – answer “{choice}” to {name}.")
+        summary = text.format(target=request.target.name, choice=choice, name=opened.signer_name)
         return SealedResult(request.target, png, summary)

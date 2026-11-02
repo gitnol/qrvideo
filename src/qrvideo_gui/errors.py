@@ -1,78 +1,89 @@
 """Ausnahmen aus qrvideo, GnuPG, ffmpeg und yt-dlp als verstaendliche Saetze (keine Tracebacks in der GUI).
 
-Die Kernmodule melden mit festen Textanfaengen (z. B. `GpgError("gpg nicht gefunden: ...")`); diese stehen
-hier als Konstanten, damit eine Aenderung im Kern an genau einer Stelle auffaellt (tests/test_gui_errors.py).
+Zuordnung nur ueber Ausnahme-Klassen, nie ueber den Wortlaut des Kerns: der ist uebersetzbar (ADR-006, I33b).
 """
 
 from __future__ import annotations
 
 from qrvideo.container import ContainerError
-from qrvideo.crypto import GpgError, UntrustedSignatureError
+from qrvideo.crypto import (
+    DecryptError,
+    EncryptError,
+    GpgError,
+    GpgNotFoundError,
+    RecipientsError,
+    UntrustedSignatureError,
+)
 from qrvideo.handshake import HandshakeError
+from qrvideo.i18n import N_, _
 
 from .jobs import Cancelled
 
-GPG_MISSING = "gpg nicht gefunden"
-DECRYPT_FAILED = "Entschluesseln fehlgeschlagen"
-ENCRYPT_FAILED = "Verschluesseln fehlgeschlagen"
-RECIPIENTS_UNTRUSTED = "Empfaenger fehlen"
-LOG_HINT = "Technische Details stehen im Konsolenfenster."
+LOG_HINT = N_("Technical details are in the console window.")
 
 
 def _gpg_message(exc: GpgError) -> str:
-    text = str(exc)
-    if text.startswith(GPG_MISSING):
-        return (
-            "GnuPG ist nicht installiert. Bitte Gpg4win installieren (https://gpg4win.org) und neu starten."
+    if isinstance(exc, GpgNotFoundError):
+        return _("GnuPG is not installed. Please install Gpg4win (https://gpg4win.org) and restart.")
+    if isinstance(exc, DecryptError):
+        return _(
+            "Decryption was not possible. Is your private key present and the passphrase correct? Is the "
+            "message addressed to you at all?"
         )
-    if text.startswith(DECRYPT_FAILED):
-        return (
-            "Entschlüsseln war nicht möglich. Ist Ihr privater Schlüssel vorhanden und die Passphrase "
-            "richtig? Ist die Nachricht überhaupt an Sie gerichtet?"
+    if isinstance(exc, EncryptError):
+        return _(
+            "Encrypting or signing was not possible. Does the chosen signing key belong to you (private key "
+            "present) and was the passphrase entered?"
         )
-    if text.startswith(ENCRYPT_FAILED):
-        return (
-            "Verschlüsseln oder Signieren war nicht möglich. Gehört der gewählte Signaturschlüssel Ihnen "
-            "(privater Schlüssel vorhanden) und wurde die Passphrase eingegeben?"
-        )
-    if text.startswith(RECIPIENTS_UNTRUSTED):
-        return "Bitte mindestens einen Empfänger ankreuzen, dessen Schlüssel Sie voll vertrauen."
-    return f"GnuPG meldet einen Fehler: {text}"
+    if isinstance(exc, RecipientsError):
+        return _("Please tick at least one recipient whose key you fully trust.")
+    return _("GnuPG reports an error: {error}").format(error=exc)
 
 
 def _os_message(exc: OSError) -> str:
-    where = f": {exc.filename}" if exc.filename else ""
+    name = exc.filename
+    if not name:
+        return _os_message_without_name(exc)
     if isinstance(exc, FileNotFoundError):
-        return f"Datei nicht gefunden{where}"
+        return _("File not found: {name}").format(name=name)
     if isinstance(exc, FileExistsError):
-        return f"Die Datei gibt es schon{where}"
+        return _("The file already exists: {name}").format(name=name)
     if isinstance(exc, PermissionError):
-        return f"Kein Zugriff{where}. Ist die Datei in einem anderen Programm geöffnet?"
-    return f"Datei- oder Systemfehler{where}: {exc.strerror or exc}"
+        return _("No access: {name}. Is the file open in another program?").format(name=name)
+    return _("File or system error: {name}: {detail}").format(name=name, detail=exc.strerror or exc)
+
+
+def _os_message_without_name(exc: OSError) -> str:
+    if isinstance(exc, FileNotFoundError):
+        return _("File not found")
+    if isinstance(exc, FileExistsError):
+        return _("The file already exists")
+    if isinstance(exc, PermissionError):
+        return _("No access. Is the file open in another program?")
+    return _("File or system error: {detail}").format(detail=exc.strerror or exc)
 
 
 def friendly_message(exc: BaseException) -> str:
     """Ein bis zwei Saetze fuer den Nutzer; unbekannte Ausnahmen verraten keine Interna."""
     if isinstance(exc, Cancelled):
-        return "Abgebrochen."
+        return _("Cancelled.")
     if isinstance(exc, UntrustedSignatureError):
-        return (
-            "Die Daten stammen nicht von einem vertrauten Absender oder die Signatur ist ungültig. "
-            f"Nichts wurde gespeichert. Details: {exc}"
-        )
+        return _(
+            "The data does not come from a trusted sender or the signature is invalid. Nothing was saved. "
+            "Details: {error}"
+        ).format(error=exc)
     if isinstance(exc, GpgError):
         return _gpg_message(exc)
     if isinstance(exc, HandshakeError):
-        return f"Die Datei ist keine gültige Handshake-Nachricht ({exc})."
+        return _("The file is not a valid handshake message ({error}).").format(error=exc)
     if isinstance(exc, ContainerError):
-        return (
-            f"Im Video wurden keine vollständigen Daten gefunden ({exc}). "
-            "Ist es ein mit qrvideo erzeugtes Video in 1080p?"
-        )
+        return _(
+            "No complete data was found in the video ({error}). Is it a 1080p video made with qrvideo?"
+        ).format(error=exc)
     if isinstance(exc, OSError):
         return _os_message(exc)
     if isinstance(exc, ValueError):
         return str(exc)
     if type(exc).__module__.startswith("yt_dlp"):
-        return f"Download von YouTube fehlgeschlagen: {exc}"
-    return f"Unerwarteter Fehler. {LOG_HINT}"
+        return _("Download from YouTube failed: {error}").format(error=exc)
+    return _("Unexpected error. {hint}").format(hint=_(LOG_HINT))

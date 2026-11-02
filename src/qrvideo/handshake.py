@@ -14,6 +14,7 @@ from typing import Any
 
 from .channel import channel_ref, parse_channel_ref
 from .crypto import Crypto, SignatureInfo
+from .i18n import _
 from .paths import safe_filename
 from .youtube import parse_video_id
 
@@ -53,7 +54,8 @@ def _encode(message: Challenge | Response) -> bytes:
 
 def _str_list(value: Any, name: str) -> list[str]:
     if not isinstance(value, list) or len(value) > MAX_ENTRIES or not all(isinstance(v, str) for v in value):
-        raise HandshakeError(f"Feld {name!r} muss eine Liste von Texten sein (hoechstens {MAX_ENTRIES})")
+        text = _("Field {name!r} must be a list of texts (at most {limit})")
+        raise HandshakeError(text.format(name=name, limit=MAX_ENTRIES))
     return value
 
 
@@ -63,7 +65,7 @@ def _video(value: str, version: int) -> str:
     try:
         return "{}:{}".format(*parse_channel_ref(value))
     except ValueError as exc:
-        raise HandshakeError(f"Ungueltiges Video {value!r}: {exc}") from exc
+        raise HandshakeError(_("Invalid video {value!r}: {error}").format(value=value, error=exc)) from exc
 
 
 def _selection(value: str, version: int) -> str:
@@ -73,7 +75,9 @@ def _selection(value: str, version: int) -> str:
     try:
         return "{}:{}".format(*parse_channel_ref(value))
     except ValueError as exc:
-        raise HandshakeError(f"Ungueltige Auswahl {value!r}: {exc}") from exc
+        raise HandshakeError(
+            _("Invalid selection {value!r}: {error}").format(value=value, error=exc)
+        ) from exc
 
 
 def parse(data: bytes) -> Challenge | Response:
@@ -81,10 +85,10 @@ def parse(data: bytes) -> Challenge | Response:
     try:
         raw = json.loads(data.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-        raise HandshakeError("Kein JSON") from exc
+        raise HandshakeError(_("Not JSON")) from exc
     version = raw.get("v") if isinstance(raw, dict) else None
     if not isinstance(raw, dict) or version not in READABLE_VERSIONS:
-        raise HandshakeError(f"Unbekannte Formatversion: {version!r}")
+        raise HandshakeError(_("Unknown format version: {version!r}").format(version=version))
     if raw.get("kind") == "challenge":
         files = tuple(safe_filename(f) for f in _str_list(raw.get("files"), "files"))
         videos = tuple(_video(v, version) for v in _str_list(raw.get("videos", []), "videos"))
@@ -92,9 +96,9 @@ def parse(data: bytes) -> Challenge | Response:
     if raw.get("kind") == "response":
         selection = raw.get("selection")
         if not isinstance(selection, str) or not selection:
-            raise HandshakeError("Feld 'selection' fehlt")
+            raise HandshakeError(_("Field 'selection' missing"))
         return Response(_selection(selection, version))
-    raise HandshakeError(f"Unbekannte Nachrichtenart: {raw.get('kind')!r}")
+    raise HandshakeError(_("Unknown message kind: {kind!r}").format(kind=raw.get("kind")))
 
 
 def seal(

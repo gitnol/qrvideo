@@ -12,9 +12,12 @@ import argparse
 import logging
 import tkinter as tk
 from collections.abc import Callable, Sequence
+from functools import partial
 from pathlib import Path
 from tkinter import font as tkfont
 from tkinter import messagebox, ttk
+
+from qrvideo.i18n import N_, SUPPORTED, _, current_language, resolve_language, set_language
 
 from .handshake import HandshakePresenter
 from .handshake_view import HandshakeTab
@@ -24,28 +27,36 @@ from .receive import ReceivePresenter
 from .receive_view import ReceiveTab
 from .send import SendPresenter
 from .send_view import SendTab
+from .settings import load_language, save_language
 from .widgets import watch
 
-TITLE = "qrvideo – Dateien als QR-Code-Video übertragen"
+TITLE = N_("qrvideo – transfer files as a QR code video")
 PAD = 8
 MIN_WIDTH, MIN_HEIGHT = 960, 700
+HEX_DIGITS = "0123456789ABCDEF"
+# Jede Sprache unter ihrem eigenen Namen, damit man sie auch findet, wenn man die aktuelle nicht versteht
+LANGUAGE_NAMES = {"de": "Deutsch", "en": "English", "es": "Español"}
 
-KEYS_HELP = (
-    "Hier stehen alle Schlüssel, denen Sie voll vertrauen. Nur an diese Personen können Sie senden, und nur "
-    "Videos, die eine dieser Personen signiert hat, werden angenommen. Schlüssel importieren und beglaubigen "
-    "Sie mit Kleopatra (Teil von Gpg4win); danach hier „Neu laden“."
+KEYS_HELP = N_(
+    "These are all the keys you fully trust. You can only send to these people, and only videos signed by "
+    "one of them are accepted. Import and certify keys with Kleopatra (part of Gpg4win), then click “Reload” "
+    "here."
 )
 
 
 class KeysTab(ttk.Frame):
     """Reiter „Schlüssel“: vertraute Schlüssel als Tabelle."""
 
-    # Spaltenbreite = Breite eines typischen Inhalts in der aktuellen Schrift (feste Pixel waeren bei hoher
+    # Spaltenbreite = Breite des laengsten Inhalts in der aktuellen Schrift (feste Pixel waeren bei hoher
     # DPI zu schmal, Screenshot I24); der Name bekommt den Rest. Keine Spalte Schluessel-ID: sie ist das Ende
-    # des Fingerabdrucks
-    COLUMNS = (
-        ("trust", "Vertrauen", TRUST_TEXT[OWN_TRUST]),
-        ("fingerprint", "Fingerabdruck", format_fingerprint("0" * 40)),
+    # des Fingerabdrucks. Fingerabdruck aus der breitesten Hex-Ziffer: „0“ ist schmaler als „D“ (I34)
+    COLUMNS: tuple[tuple[str, str, Callable[[tkfont.Font], str]], ...] = (
+        ("trust", N_("Trust"), lambda font: _(TRUST_TEXT[OWN_TRUST])),
+        (
+            "fingerprint",
+            N_("Fingerprint"),
+            lambda font: format_fingerprint(max(HEX_DIGITS, key=font.measure) * 40),
+        ),
     )
 
     def __init__(
@@ -57,21 +68,21 @@ class KeysTab(ttk.Frame):
     ) -> None:
         super().__init__(parent, padding=PAD)
         self._keys, self._status, self._on_rows = keys, status, on_rows
-        ttk.Label(self, text=KEYS_HELP, wraplength=760, justify="left").pack(anchor="w", pady=(0, PAD))
+        ttk.Label(self, text=_(KEYS_HELP), wraplength=760, justify="left").pack(anchor="w", pady=(0, PAD))
         self.table = ttk.Treeview(self, columns=["name", *(c for c, _, _ in self.COLUMNS)], show="headings")
-        self.table.heading("name", text="Name")
+        self.table.heading("name", text=_("Name"))
         self.table.column("name", width=120, stretch=True)
         font = tkfont.nametofont("TkDefaultFont")
         for column, text, sample in self.COLUMNS:
-            self.table.heading(column, text=text)
-            self.table.column(column, width=font.measure(sample) + 3 * PAD, stretch=False)
+            self.table.heading(column, text=_(text))
+            self.table.column(column, width=font.measure(sample(font)) + 3 * PAD, stretch=False)
         self.table.pack(fill="both", expand=True)
-        self.reload_button = ttk.Button(self, text="Neu laden", command=self.reload)
+        self.reload_button = ttk.Button(self, text=_("Reload"), command=self.reload)
         self.reload_button.pack(anchor="e", pady=(PAD, 0))
 
     def reload(self) -> None:
         self.reload_button.state(["disabled"])
-        self._status.set("Schlüssel werden geladen …")
+        self._status.set(_("Loading keys …"))
         keys = self._keys  # Task erfasst kein Widget: Tk-Objekte nie im Worker-Thread freigeben
         watch(self, Job(lambda progress: keys.rows()), self._on_event)
 
@@ -80,7 +91,7 @@ class KeysTab(ttk.Frame):
             rows: list[KeyRow] = event.result  # type: ignore[assignment]
             self.show(rows)
             self._on_rows(rows)
-            self._status.set(f"{len(rows)} vertraute Schlüssel")
+            self._status.set(_("{count} trusted keys").format(count=len(rows)))
         elif isinstance(event, Failed):
             self._status.set(event.message)
         self.reload_button.state(["!disabled"])
@@ -92,19 +103,26 @@ class KeysTab(ttk.Frame):
 
 
 Ask = Callable[[str, str], bool]
+Save = Callable[[str], None]
 
 
 class MainWindow:
     """Reiter Senden, Empfangen, Handshake, Schlüssel; die geladenen Schlüssel gehen an alle Reiter."""
 
-    def __init__(self, root: tk.Tk | tk.Toplevel, keys: KeyService, ask: Ask = messagebox.askyesno) -> None:
-        self._root, self._ask = root, ask
-        root.title(TITLE)
+    def __init__(
+        self,
+        root: tk.Tk | tk.Toplevel,
+        keys: KeyService,
+        ask: Ask = messagebox.askyesno,
+        save: Save = save_language,
+    ) -> None:
+        self._root, self._ask, self._save = root, ask, save
+        root.title(_(TITLE))
         root.minsize(MIN_WIDTH, MIN_HEIGHT)
         root.protocol("WM_DELETE_WINDOW", self.close)
         linespace = tkfont.nametofont("TkDefaultFont").metrics("linespace")
         ttk.Style(root).configure("Treeview", rowheight=linespace + 6)  # sonst Unterlaengen abgeschnitten
-        self.status = tk.StringVar(root, value="Bereit")
+        self.status = tk.StringVar(root, value=_("Ready"))
         self.notebook = ttk.Notebook(root)
         self.notebook.pack(fill="both", expand=True, padx=PAD, pady=PAD)
         ttk.Label(root, textvariable=self.status, anchor="w", relief="sunken", padding=(PAD, 2)).pack(
@@ -114,12 +132,37 @@ class MainWindow:
         self.receive_tab = ReceiveTab(self.notebook, ReceivePresenter(keys), self.status)
         self.handshake_tab = HandshakeTab(self.notebook, HandshakePresenter(keys), self.status)
         self.keys_tab = KeysTab(self.notebook, keys, self.status, on_rows=self._share_rows)
-        self.notebook.add(self.send_tab, text="Senden")
-        self.notebook.add(self.receive_tab, text="Empfangen")
-        self.notebook.add(self.handshake_tab, text="Handshake")
-        self.notebook.add(self.keys_tab, text="Schlüssel")
+        self.notebook.add(self.send_tab, text=_("Send"))
+        self.notebook.add(self.receive_tab, text=_("Receive"))
+        self.notebook.add(self.handshake_tab, text=_("Handshake"))
+        self.notebook.add(self.keys_tab, text=_("Keys"))
+        self._add_language_menu()
         self.keys_tab.reload()
         self._fit()
+
+    def _add_language_menu(self) -> None:
+        """Menü „Sprache“; die Wahl gilt nach einem Neustart (Texte werden beim Aufbau gesetzt, ADR-006)."""
+        menubar = tk.Menu(self._root)
+        languages = tk.Menu(menubar, tearoff=False)
+        self.language = tk.StringVar(self._root, value=current_language())
+        for code in SUPPORTED:
+            languages.add_radiobutton(
+                label=LANGUAGE_NAMES.get(code, code),
+                value=code,
+                variable=self.language,
+                command=partial(self.choose_language, code),
+            )
+        menubar.add_cascade(label=_("Language"), menu=languages)
+        self._root.configure(menu=menubar)
+
+    def choose_language(self, language: str) -> None:
+        name = LANGUAGE_NAMES.get(language, language)
+        try:
+            self._save(language)
+        except OSError as exc:
+            self.status.set(_("The language could not be saved: {error}").format(error=exc))
+            return
+        self.status.set(_("Language saved: {name}. It takes effect after a restart.").format(name=name))
 
     def _share_rows(self, rows: list[KeyRow]) -> None:
         for tab in (self.send_tab, self.handshake_tab):
@@ -145,7 +188,7 @@ class MainWindow:
             for tab in (self.send_tab, self.receive_tab, self.handshake_tab)
             if tab.job is not None and tab.job.running
         ]
-        if busy and not self._ask("Vorgang läuft", "Ein Vorgang läuft noch. Abbrechen und beenden?"):
+        if busy and not self._ask(_("Task running"), _("A task is still running. Cancel it and quit?")):
             return False
         for job in busy:
             job.cancel()
@@ -154,11 +197,22 @@ class MainWindow:
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(prog="qrvideo-gui", description=TITLE)
+    parser = argparse.ArgumentParser(prog="qrvideo-gui", description=_(TITLE))
+    parser.add_argument("--gnupghome", type=Path, help=_("own GnuPG keyring (default: the user's)"))
     parser.add_argument(
-        "--gnupghome", type=Path, help="eigener GnuPG-Schlüsselbund (Standard: der des Nutzers)"
+        "--lang",
+        choices=SUPPORTED,
+        help=_("language of the interface (default: QRVIDEO_LANG, the saved choice, the system language)"),
     )
     return parser.parse_args(argv)
+
+
+def startup_language(argv: Sequence[str] | None, saved: Path | None = None) -> str:
+    """Vorrang: `--lang` → `QRVIDEO_LANG` → im Menü gespeichert → System → Englisch (ADR-006)."""
+    early = argparse.ArgumentParser(add_help=False)
+    early.add_argument("--lang")
+    explicit = early.parse_known_args(argv)[0].lang
+    return resolve_language(explicit, saved=load_language(saved))
 
 
 def _sharp_on_high_dpi() -> None:
@@ -175,6 +229,7 @@ def _sharp_on_high_dpi() -> None:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    set_language(startup_language(argv))  # vor dem Parser: auch `--help` in der gewaehlten Sprache
     args = parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     from qrvideo.crypto import Crypto

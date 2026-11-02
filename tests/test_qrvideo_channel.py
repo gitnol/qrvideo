@@ -67,7 +67,7 @@ def test_youtube_channel_fetches_with_browser_cookies(tmp_path: Path) -> None:
     assert seen == [("firefox",), None]
     channel = make_channel("youtube", cookies_from_browser=("edge",))
     assert isinstance(channel, YouTubeChannel)
-    with pytest.raises(ValueError, match="nur fuer YouTube"):
+    with pytest.raises(ValueError, match="nur für YouTube"):
         make_channel("folder", folder=tmp_path, cookies_from_browser=("firefox",))
 
 

@@ -8,6 +8,8 @@ from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
 from typing import Any
 
+from qrvideo.i18n import N_, _, ngettext
+
 from .handshake import (
     CHALLENGE,
     ChallengeRequest,
@@ -22,10 +24,10 @@ from .widgets import PAD, KeyChecklist, SignerChoice, watch
 
 Ask = Callable[[str, str], bool]
 WRAP = 400
-INTRO = (
-    "Der Handshake klärt vorab, was übertragen wird: Der Anbieter verschickt ein verschlüsseltes Angebot "
-    "(Challenge), der Empfänger antwortet mit seiner Auswahl (Response). Beide Nachrichten reisen als "
-    "Text (.asc) oder als QR-Code-Bild (.png) über einen beliebigen Kanal."
+INTRO = N_(
+    "The handshake settles in advance what will be transferred: the provider sends an encrypted offer "
+    "(challenge), the recipient answers with a choice (response). Both messages travel as text (.asc) or as "
+    "a QR code image (.png) over any channel."
 )
 
 
@@ -40,7 +42,7 @@ def _file_row(parent: tk.Misc, row: int, text: str, var: tk.StringVar, browse: C
 
 def _save_as(parent: tk.Misc, var: tk.StringVar, title: str) -> None:
     chosen = filedialog.asksaveasfilename(
-        parent=parent, title=title, defaultextension=".asc", filetypes=[("Nachricht", "*.asc")]
+        parent=parent, title=title, defaultextension=".asc", filetypes=[(_("Message"), "*.asc")]
     )
     if chosen:
         var.set(chosen)
@@ -58,45 +60,45 @@ class HandshakeTab(ttk.Frame):
         self._presenter, self._status, self._ask = presenter, status, ask
         self.job: Job[Any] | None = None
         self._opened: OpenedMessage | None = None
-        ttk.Label(self, text=INTRO, wraplength=2 * WRAP + 3 * PAD, justify="left").grid(
+        ttk.Label(self, text=_(INTRO), wraplength=2 * WRAP + 3 * PAD, justify="left").grid(
             row=0, column=0, columnspan=2, sticky="w", pady=(0, PAD)
         )
         self.columnconfigure((0, 1), weight=1, uniform="half")
-        self._build_challenge(ttk.LabelFrame(self, text="Angebot erstellen (Challenge)", padding=PAD))
-        self._build_answer(ttk.LabelFrame(self, text="Nachricht öffnen und beantworten", padding=PAD))
+        self._build_challenge(ttk.LabelFrame(self, text=_("Create an offer (challenge)"), padding=PAD))
+        self._build_answer(ttk.LabelFrame(self, text=_("Open and answer a message"), padding=PAD))
 
     def _build_challenge(self, box: ttk.LabelFrame) -> None:
         box.grid(row=1, column=0, sticky="nsew", padx=(0, PAD))
         box.columnconfigure(0, weight=1)
         self.directory, self.challenge_target = tk.StringVar(self), tk.StringVar(self)
         self.challenge_png, self.challenge_result = tk.BooleanVar(self, value=True), tk.StringVar(self)
-        _file_row(box, 0, "Ordner mit den angebotenen Dateien", self.directory, self._browse_directory)
+        _file_row(box, 0, _("Folder with the offered files"), self.directory, self._browse_directory)
         ttk.Label(
             box,
-            text="Bereitgestellte Videos (YouTube-Link oder folder:<Dateiname>, je Zeile, optional)",
+            text=_("Published videos (YouTube link or folder:<file name>, one per line, optional)"),
             wraplength=WRAP,  # sonst bestimmt diese eine Zeile die Breite beider Spalten
             justify="left",
         ).grid(row=2, column=0, sticky="w", pady=(PAD, 0))
         self.videos = tk.Text(box, height=3, width=40)
         self.videos.grid(row=3, column=0, sticky="ew")
-        ttk.Label(box, text="Empfänger").grid(row=4, column=0, sticky="w", pady=(PAD, 0))
+        ttk.Label(box, text=_("Recipients")).grid(row=4, column=0, sticky="w", pady=(PAD, 0))
         self.recipients = KeyChecklist(box)
         self.recipients.grid(row=5, column=0, sticky="w")
-        ttk.Label(box, text="Signieren mit").grid(row=6, column=0, sticky="w", pady=(PAD, 0))
+        ttk.Label(box, text=_("Sign with")).grid(row=6, column=0, sticky="w", pady=(PAD, 0))
         self.challenge_signer = SignerChoice(box)
         self.challenge_signer.configure(width=45)
         self.challenge_signer.grid(row=7, column=0, sticky="ew")
         _file_row(
             box,
             8,
-            "Speichern als (.asc)",
+            _("Save as (.asc)"),
             self.challenge_target,
-            lambda: _save_as(self, self.challenge_target, "Challenge speichern"),
+            lambda: _save_as(self, self.challenge_target, _("Save challenge")),
         )
-        ttk.Checkbutton(box, text="zusätzlich als QR-Code-Bild (.png)", variable=self.challenge_png).grid(
+        ttk.Checkbutton(box, text=_("also as a QR code image (.png)"), variable=self.challenge_png).grid(
             row=10, column=0, sticky="w", pady=(PAD, 0)
         )
-        self.challenge_button = ttk.Button(box, text="Challenge erstellen", command=self.start_challenge)
+        self.challenge_button = ttk.Button(box, text=_("Create challenge"), command=self.start_challenge)
         self.challenge_button.grid(row=11, column=0, sticky="w", pady=PAD)
         ttk.Label(box, textvariable=self.challenge_result, wraplength=WRAP, justify="left").grid(
             row=12, column=0, sticky="w"
@@ -108,30 +110,30 @@ class HandshakeTab(ttk.Frame):
         self.message, self.message_result = tk.StringVar(self), tk.StringVar(self)
         self.response_target, self.response_result = tk.StringVar(self), tk.StringVar(self)
         self.response_png = tk.BooleanVar(self, value=True)
-        _file_row(box, 0, "Nachricht (.asc oder QR-Code-Bild .png)", self.message, self._browse_message)
-        self.open_button = ttk.Button(box, text="Öffnen", command=self.start_open)
+        _file_row(box, 0, _("Message (.asc or QR code image .png)"), self.message, self._browse_message)
+        self.open_button = ttk.Button(box, text=_("Open"), command=self.start_open)
         self.open_button.grid(row=2, column=0, sticky="w", pady=PAD)
         ttk.Label(box, textvariable=self.message_result, wraplength=WRAP, justify="left").grid(
             row=3, column=0, sticky="w"
         )
         self.entries = tk.Listbox(box, height=5, exportselection=False)
         self.entries.grid(row=4, column=0, sticky="ew", pady=(PAD, 0))
-        ttk.Label(box, text="Antwort signieren mit").grid(row=5, column=0, sticky="w", pady=(PAD, 0))
+        ttk.Label(box, text=_("Sign the answer with")).grid(row=5, column=0, sticky="w", pady=(PAD, 0))
         self.response_signer = SignerChoice(box)
         self.response_signer.configure(width=45)
         self.response_signer.grid(row=6, column=0, sticky="ew")
         _file_row(
             box,
             7,
-            "Antwort speichern als (.asc)",
+            _("Save the answer as (.asc)"),
             self.response_target,
-            lambda: _save_as(self, self.response_target, "Response speichern"),
+            lambda: _save_as(self, self.response_target, _("Save response")),
         )
-        ttk.Checkbutton(box, text="zusätzlich als QR-Code-Bild (.png)", variable=self.response_png).grid(
+        ttk.Checkbutton(box, text=_("also as a QR code image (.png)"), variable=self.response_png).grid(
             row=9, column=0, sticky="w", pady=(PAD, 0)
         )
         self.response_button = ttk.Button(
-            box, text="Auswahl als Response speichern", command=self.start_response, state="disabled"
+            box, text=_("Save the choice as a response"), command=self.start_response, state="disabled"
         )
         self.response_button.grid(row=10, column=0, sticky="w", pady=PAD)
         ttk.Label(box, textvariable=self.response_result, wraplength=WRAP, justify="left").grid(
@@ -148,7 +150,7 @@ class HandshakeTab(ttk.Frame):
         self.response_signer.set_rows(rows)
 
     def _browse_directory(self) -> None:
-        chosen = filedialog.askdirectory(parent=self, title="Ordner mit den angebotenen Dateien")
+        chosen = filedialog.askdirectory(parent=self, title=_("Folder with the offered files"))
         if chosen:
             self.directory.set(chosen)
             if not self.challenge_target.get():
@@ -157,8 +159,8 @@ class HandshakeTab(ttk.Frame):
     def _browse_message(self) -> None:
         chosen = filedialog.askopenfilename(
             parent=self,
-            title="Nachricht öffnen",
-            filetypes=[("Nachricht oder QR-Code", "*.asc *.png"), ("Alle Dateien", "*.*")],
+            title=_("Open message"),
+            filetypes=[(_("Message or QR code"), "*.asc *.png"), (_("All files"), "*.*")],
         )
         if chosen:
             self.message.set(chosen)
@@ -169,7 +171,8 @@ class HandshakeTab(ttk.Frame):
         if not existing:
             return False
         names = ", ".join(p.name for p in existing)
-        return True if self._ask("Überschreiben?", f"{names} gibt es schon. Überschreiben?") else None
+        question = _("{names} already exist(s). Overwrite?").format(names=names)
+        return True if self._ask(_("Overwrite?"), question) else None
 
     def _run(self, task: Callable[[Progress], Any], result: tk.StringVar, done: Callable[[Any], str]) -> None:
         def on_event(event: Event) -> None:
@@ -178,12 +181,12 @@ class HandshakeTab(ttk.Frame):
             elif isinstance(event, Failed):
                 result.set(event.message)
             elif isinstance(event, WasCancelled):
-                result.set("Abgebrochen.")
+                result.set(_("Cancelled."))
             if isinstance(event, Finished | Failed | WasCancelled):
-                self._status.set("Bereit")
+                self._status.set(_("Ready"))
 
         result.set("")
-        self._status.set("Handshake läuft …")
+        self._status.set(_("Handshake running …"))
         self.job = Job(task)
         watch(self, self.job, on_event)
 
@@ -217,15 +220,23 @@ class HandshakeTab(ttk.Frame):
     def _show_message(self, opened: OpenedMessage) -> str:
         self._opened = opened
         fingerprint = format_fingerprint(opened.signer_fingerprint)
-        sender = f"Signiert von: {opened.signer_name}\nFingerabdruck: {fingerprint}"
+        sender = _("Signed by: {name}\nFingerprint: {fingerprint}").format(
+            name=opened.signer_name, fingerprint=fingerprint
+        )
         if opened.kind != CHALLENGE:
-            return f"Response – gewählt wurde: „{opened.selection}“\n{sender}"
+            text = _("Response – the choice was: “{selection}”\n{sender}")
+            return text.format(selection=opened.selection, sender=sender)
         for entry in opened.entries:
             self.entries.insert("end", entry)
         if not self.response_target.get():
             self.response_target.set(str(opened.path.with_name("response.asc")))
         self.response_button.state(["!disabled"])
-        return f"Challenge mit {len(opened.entries)} Einträgen – bitte einen wählen.\n{sender}"
+        text = ngettext(
+            "Challenge with {count} entry – please choose it.\n{sender}",
+            "Challenge with {count} entries – please choose one.\n{sender}",
+            len(opened.entries),
+        )
+        return text.format(count=len(opened.entries), sender=sender)
 
     def start_response(self) -> None:
         presenter = self._presenter  # Task erfasst kein Widget (Tk nie im Worker-Thread freigeben)

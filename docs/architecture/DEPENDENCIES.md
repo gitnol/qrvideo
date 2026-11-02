@@ -35,6 +35,7 @@ die Altpakete der Thesis (u. a. `pyzbar`, `youtube_dl`, `oauth2client`); sie sin
 | `mypy` | Typprüfung (strict, Gate 3); `src/qrcodegenmod/py.typed` markiert das Paket als typisiert |
 | `numba` | in der Dev-Gruppe, damit Tests den JIT-Pfad abdecken |
 | `import-linter` (`>=2.15`) | Schichtregel als Gate 5 (`lint-imports`, Contract in `pyproject.toml`), seit I25; zieht grimp, click, rich (mit markdown-it-py, mdurl, pygments) und typing-extensions nach |
+| `pillow` (nur ad hoc, **keine** Projektabhängigkeit) | Bildschirmaufnahme in `tools/screenshots.py` (seit I33j), geladen per `uv run --with pillow`; nicht in `pyproject.toml`/`uv.lock` |
 
 ---
 

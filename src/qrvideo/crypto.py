@@ -16,6 +16,8 @@ from urllib.parse import unquote_to_bytes
 
 import gnupg
 
+from .i18n import _
+
 TRUSTED_OWNERTRUST = ("u", "f")  # ultimate, full
 # Threat T1: ohne diese Option stehen die Empfaenger-KeyIDs unverschluesselt in der Nachricht, und jeder mit
 # dem Video-Link liest sie (`gpg --list-packets`). Sichtbar bleibt nur die Zahl der Empfaenger.
@@ -25,6 +27,22 @@ _PLAINTEXT = re.compile(r"^\[GNUPG:\] PLAINTEXT \S+ \S+ ?(\S*)", re.MULTILINE)
 
 class GpgError(RuntimeError):
     """GnuPG-Aufruf fehlgeschlagen."""
+
+
+class GpgNotFoundError(GpgError):
+    """Kein gpg-Programm gefunden (weder `QRVIDEO_GPG` noch Installation noch PATH)."""
+
+
+class RecipientsError(GpgError):
+    """Keine Empfaenger angegeben oder mindestens einer nicht voll vertraut."""
+
+
+class EncryptError(GpgError):
+    """gpg konnte nicht verschluesseln oder signieren."""
+
+
+class DecryptError(GpgError):
+    """gpg konnte nicht entschluesseln."""
 
 
 class UntrustedSignatureError(GpgError):
@@ -59,7 +77,7 @@ def find_gpg_binary() -> str:
     explicit = os.environ.get("QRVIDEO_GPG")
     if explicit:
         if not Path(explicit).is_file():
-            raise GpgError(f"QRVIDEO_GPG zeigt auf keine Datei: {explicit}")
+            raise GpgError(_("QRVIDEO_GPG does not point to a file: {path}").format(path=explicit))
         return explicit
     on_path = shutil.which("gpg")
     candidates = [
@@ -69,7 +87,7 @@ def find_gpg_binary() -> str:
     for candidate in candidates:
         if candidate and Path(candidate).is_file():
             return str(candidate)
-    raise GpgError("gpg nicht gefunden: GnuPG installieren oder QRVIDEO_GPG setzen")
+    raise GpgNotFoundError(_("gpg not found: install GnuPG or set QRVIDEO_GPG"))
 
 
 class Crypto:
@@ -90,7 +108,8 @@ class Crypto:
         trusted = {v for key in self.trusted_keys() for v in (key.keyid, key.fingerprint)}
         unknown = [r for r in recipients if r.upper() not in trusted]
         if not recipients or unknown:
-            raise GpgError(f"Empfaenger fehlen oder sind nicht vertraut: {unknown or 'keine angegeben'}")
+            missing = unknown or _("none given")
+            raise RecipientsError(_("Recipients missing or not trusted: {keys}").format(keys=missing))
 
     def encrypt(
         self,
@@ -112,12 +131,12 @@ class Crypto:
             data, recipients, sign=signer, passphrase=passphrase, armor=armor, extra_args=extra
         )
         if not result.ok:
-            raise GpgError(f"Verschluesseln fehlgeschlagen: {result.status}")
+            raise EncryptError(_("Encryption failed: {status}").format(status=result.status))
         return bytes(result.data)
 
     def decrypt(self, data: bytes, passphrase: str | None = None) -> tuple[bytes, SignatureInfo]:
         """Entschluesseln; nur mit gueltiger Signatur eines voll vertrauten Schluessels."""
-        plain, signer, _ = self.decrypt_with_name(data, passphrase)
+        plain, signer, _name = self.decrypt_with_name(data, passphrase)
         return plain, signer
 
     def decrypt_with_name(
@@ -126,22 +145,23 @@ class Crypto:
         """Wie `decrypt`, dazu der eingebettete Dateiname (None ohne) - unsanitisiert, also fremde Eingabe."""
         result = self._gpg.decrypt(data, passphrase=passphrase)
         if not result.ok:
-            raise GpgError(f"Entschluesseln fehlgeschlagen: {result.status}")
+            raise DecryptError(_("Decryption failed: {status}").format(status=result.status))
         # python-gnupg ueberschreibt valid/trust_level je Statuszeile; deshalb jede Signatur einzeln pruefen
         # (Code-Review #7). NO_SECKEY betrifft andere Empfaenger einer Nachricht, keine Signatur.
         problems = [p for p in result.problems if p.get("status") != "no secret key"]
         if problems:
-            raise UntrustedSignatureError(f"Signaturproblem: {problems[0].get('status')}")
+            status = problems[0].get("status")
+            raise UntrustedSignatureError(_("Signature problem: {status}").format(status=status))
         signatures = list(result.sig_info.values())
         if len(signatures) != 1:
-            raise UntrustedSignatureError(
-                f"Nachricht ist nicht gueltig signiert ({len(signatures)} Signaturen)"
-            )
+            text = _("Message is not validly signed ({count} signatures)")
+            raise UntrustedSignatureError(text.format(count=len(signatures)))
         sig = signatures[0]
         if sig.get("status") != "signature valid" or sig.get("trust_level") is None:
-            raise UntrustedSignatureError("Nachricht ist nicht gueltig signiert")
+            raise UntrustedSignatureError(_("Message is not validly signed"))
         if sig["trust_level"] < result.TRUST_FULLY:
-            raise UntrustedSignatureError(f"Signaturschluessel {sig.get('keyid')} ist nicht voll vertraut")
+            text = _("Signing key {keyid} is not fully trusted")
+            raise UntrustedSignatureError(text.format(keyid=sig.get("keyid")))
         # Primaerschluessel statt Signatur-Unterschluessel (Code-Review #6)
         fingerprint = sig.get("pubkey_fingerprint") or sig.get("fingerprint")
         signer = SignatureInfo(str(sig.get("keyid")), str(fingerprint), str(sig.get("username")))

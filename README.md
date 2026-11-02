@@ -1,6 +1,6 @@
 # Thesis Revival 2026
 
-*English version: [README.en.md](README.en.md)*
+*English version: [README.en.md](README.en.md) · Versión en español: [README.es.md](README.es.md)*
 
 Wiederbelebung einer Bachelor-Thesis von 2019 zum Datenaustausch über Videos aus QR-Codes:
 Dateien mit GnuPG verschlüsseln, als Video aus QR-Codes kodieren, über YouTube übertragen und zurückgewinnen.
@@ -14,8 +14,9 @@ Dateien mit GnuPG verschlüsseln, als Video aus QR-Codes kodieren, über YouTube
 | Übertragung `qrvideo` (Befehl `qrvideo`) | `src/qrvideo/` |
 | Bedienoberfläche (Befehl `qrvideo-gui`) | `src/qrvideo_gui/` |
 | Thesis-Stand 2019 (unverändert) | `legacy/` |
-| Bedienungsanleitung | [`docs/BEDIENUNGSANLEITUNG.md`](docs/BEDIENUNGSANLEITUNG.md) (English: [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md)) |
-| Architektur, Entscheidungen (ADR), Bedrohungsmodell | [`docs/architecture/`](docs/architecture/), [`docs/security/`](docs/security/THREAT_MODEL.md) |
+| Bedienungsanleitung | [`docs/BEDIENUNGSANLEITUNG.md`](docs/BEDIENUNGSANLEITUNG.md) (English: [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md), español: [`docs/GUIA_DE_USUARIO.md`](docs/GUIA_DE_USUARIO.md)) |
+| Projektdokumentation (docs_template) | `docs/` |
+| Fortschritt als Seite | `FORTSCHRITT.html` |
 
 ## Dank an Project Nayuki
 
@@ -32,9 +33,6 @@ Modernisierung 2026 stützt sich auf sie: Die offizielle Version `qrcodegen` 1.8
 `qrcodegenmod` erzeugt für jede Version, ECC-Stufe und Maske Bit für Bit dieselben QR-Codes.
 
 Vielen Dank an Nayuki für diese großartige Arbeit und dafür, sie frei zur Verfügung zu stellen.
-
-Die Entwicklung lief nach einem internen Doku-Prozess (Arbeitsstand, Reflexionen, Changelog). Diese
-Projektprotokolle sind nicht Teil des Repos; Verweise in `docs/` auf solche Dateien beziehen sich darauf.
 
 ## Schnellstart
 
@@ -57,7 +55,8 @@ img = qr.to_image(scale=2, border=2)  # uint8, dunkel = 0, hell = 255
 ## Bedienoberfläche (`qrvideo-gui`)
 
 Für alle, die keine Kommandozeile nutzen möchten: Fenster mit den Reitern Senden, Empfangen, Handshake und
-Schlüssel. Schritt für Schritt, auch für die Einrichtung von GnuPG:
+Schlüssel, auf Deutsch, Englisch oder Spanisch (Menü „Sprache“, `--lang`). Schritt für Schritt, auch für die
+Einrichtung von GnuPG:
 [Bedienungsanleitung](docs/BEDIENUNGSANLEITUNG.md) (technische Beschreibung: [`docs/features/GUI.md`](docs/features/GUI.md)).
 
 ```powershell
@@ -67,7 +66,8 @@ uv run qrvideo-gui
 ## Dateien übertragen (`qrvideo`)
 
 Voraussetzungen: GnuPG ≥ 2.4.9 (unter Windows Gpg4win), vertraute Schlüssel für Absender und Empfänger.
-Die Passphrase fragt gpg-agent ab; `QRVIDEO_PASSPHRASE` nur für unbeaufsichtigte Läufe.
+Die Passphrase fragt gpg-agent ab; `QRVIDEO_PASSPHRASE` nur für unbeaufsichtigte Läufe. Sprache der Ausgaben:
+`--lang de|en|es` oder `QRVIDEO_LANG`, sonst die des Systems.
 
 ```powershell
 uv run qrvideo keys                                              # vertraute Schlüssel
@@ -93,3 +93,22 @@ uv run qrvideo respond challenge.png --select 0 --sign <KeyID> -o response.asc
 
 Hinweis für eigene Skripte unter Windows: Der Encoder nutzt einen Prozess-Pool, das aufrufende Skript braucht
 `if __name__ == "__main__":`.
+
+## Sprachen
+
+Bedienoberfläche und Kommandozeile sprechen Deutsch, Englisch und Spanisch. Die Quelltexte im Code sind englisch;
+jede Sprache ist ein `gettext`-Katalog unter `src/qrvideo/locale/<sprache>/LC_MESSAGES/qrvideo.po` (ADR-006). Ein
+Test prüft, dass jeder Text in jeder Sprache übersetzt ist, die Platzhalter `{name}` übereinstimmen und die
+`.mo`-Dateien aktuell sind.
+
+Neue Sprache ergänzen (z. B. Französisch, `fr`):
+
+1. `"fr"` in `SUPPORTED` (`src/qrvideo/i18n.py`) und `LANGUAGES` (`tools/i18n_catalog.py`) eintragen, den Namen in
+   `LANGUAGE_NAMES` (`src/qrvideo_gui/app.py`); für Zahlen einen Eintrag in `_NUMBERS` (`i18n.py`).
+2. `uv run python tools/i18n_catalog.py update` legt `fr/LC_MESSAGES/qrvideo.po` mit allen Texten leer an.
+3. Die `.po` übersetzen (von Hand oder mit Poedit) und `update` erneut ausführen; das kompiliert die `.mo`.
+4. `uv run pytest tests/test_i18n_catalog.py` meldet, was fehlt.
+5. Screenshots: `uv run --with pillow python tools/screenshots.py --lang fr` (vorher Demo-Daten der Sprache in
+   `DEMO` ergänzen).
+
+Die spanischen Texte sind nicht von Muttersprachlern geprüft; Korrekturen an der `.po` sind willkommen.

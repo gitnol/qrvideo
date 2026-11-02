@@ -7,15 +7,20 @@
 Bedienung von `qrvideo` ohne Kommandozeile unter Windows: Datei senden, Video empfangen, Handshake, vertraute
 Schlüssel ansehen. Zielgruppe sind Menschen ohne Kommandozeilen-Kenntnis (seit I20b, Entscheidung ADR-004).
 
-Start: `uv run qrvideo-gui` (optional `--gnupghome <Ordner>` für einen eigenen Schlüsselbund) oder
-`python -m qrvideo_gui`.
+Start: `uv run qrvideo-gui` (optional `--gnupghome <Ordner>` für einen eigenen Schlüsselbund,
+`--lang de|en|es` für die Sprache) oder `python -m qrvideo_gui`.
+
+Sprache (seit I33i, ADR-006): Deutsch, Englisch, Spanisch. Menü „Sprache“ speichert die Wahl in
+`%APPDATA%\qrvideo\settings.json` (sonst `$XDG_CONFIG_HOME/qrvideo/settings.json`); sie gilt nach einem Neustart.
+Vorrang beim Start: `--lang` → `QRVIDEO_LANG` → gespeicherte Wahl → Sprache des Systems → Englisch. Ist
+`QRVIDEO_LANG` gesetzt, überstimmt sie das Menü.
 
 ---
 
 ## Technologie / Abhängigkeiten
 
 - Tkinter/ttk aus der Standardbibliothek (Tk 8.6), keine neue Abhängigkeit
-- `src/qrvideo_gui/`: `jobs.py` (Hintergrund-Thread, Fortschritt, Abbruch), `errors.py` (deutsche Fehlertexte),
+- `src/qrvideo_gui/`: `jobs.py` (Hintergrund-Thread, Fortschritt, Abbruch), `errors.py` (Fehlertexte in der gewählten Sprache),
   `keys.py` (vertraute Schlüssel, Tk-frei), `widgets.py` (Job-Ereignisse im Tk-Thread abholen), `app.py`
   (Hauptfenster, Reiter „Schlüssel“, `main`), `__main__.py`; seit I21 `send.py` (Logik Senden, Tk-frei) und
   `send_view.py` (Reiter „Senden“), `widgets.py` mit Empfänger-Häkchen, Fortschrittsbalken, „Ordner öffnen“;
@@ -99,5 +104,19 @@ mit ECC L und 10 % Parität, crf 12.
 - Ende-zu-Ende (seit I24, `-m integration`): `tests/test_gui_roundtrip.py` — Senden → Empfangen und Handshake über
   die Presenter mit echtem GnuPG (getrennte Schlüsselbunde Alice/Bob/Carol), Prozess-Pool und ffmpeg;
   Mutationsprüfung 4/4 getötet
-- Was nicht automatisiert getestet wird: Aussehen (per Screenshot unter `live/` geprüft, gitignored),
-  Tastaturbedienung, pinentry-Dialog, echter YouTube-Download
+- Was nicht automatisiert getestet wird: Aussehen (per Screenshot geprüft, siehe unten), Tastaturbedienung,
+  pinentry-Dialog, echter YouTube-Download
+
+### Screenshots erneuern (seit I33j)
+
+```powershell
+uv run --with pillow python tools/screenshots.py            # alle Sprachen; --lang de en es wählt aus
+```
+
+Legt je Sprache Demo-Schlüsselbunde „Alice/Bob Beispiel“ (`@example.test`, ohne Passphrase) unter
+`C:\Temp\qrvideo-demo` an (Pfad steht in den Bildern, daher kurz und neutral; darf nicht existieren), steuert die
+echte GUI (Senden, Empfangen, Handshake mit GnuPG, Prozess-Pool und ffmpeg) und speichert
+`docs/images/<sprache>/{keys,send-done,receive-done,handshake-offer,handshake-answer}.png` in natürlicher
+Fenstergröße. Eine weiße Fläche hinter dem Fenster verhindert, dass in den runden Ecken der Desktop erscheint.
+Danach werden die gpg-agents beendet und der Ordner gelöscht. Während der Aufnahme liegen die Fenster kurz im
+Vordergrund; nur unter Windows erprobt.

@@ -13,10 +13,11 @@ from dataclasses import dataclass
 from typing import Protocol
 
 from qrvideo.crypto import KeyInfo, SignatureInfo
+from qrvideo.i18n import N_, _
 
 OWN_TRUST = "u"
-TRUST_TEXT = {OWN_TRUST: "ultimativ (eigener Schlüssel)", "f": "voll"}
-NO_NAME = "(ohne Namen)"
+TRUST_TEXT = {OWN_TRUST: N_("ultimate (own key)"), "f": N_("full")}  # uebersetzt beim Gebrauch
+NO_NAME = N_("(no name)")
 
 
 class CryptoLike(Protocol):
@@ -52,10 +53,10 @@ class KeyRow:
 
 def _row(key: KeyInfo) -> KeyRow:
     return KeyRow(
-        name=key.uids[0] if key.uids else NO_NAME,
+        name=key.uids[0] if key.uids else _(NO_NAME),
         keyid=key.keyid,
         fingerprint=key.fingerprint,
-        trust=TRUST_TEXT.get(key.ownertrust, key.ownertrust),
+        trust=_(TRUST_TEXT[key.ownertrust]) if key.ownertrust in TRUST_TEXT else key.ownertrust,
         own=key.ownertrust == OWN_TRUST,
     )
 
@@ -87,4 +88,5 @@ class KeyService:
     def rows(self) -> list[KeyRow]:
         """Eigene Schluessel zuerst, danach alphabetisch nach Name."""
         rows = [_row(k) for k in self.crypto().trusted_keys()]
-        return sorted(rows, key=lambda r: (not r.own, r.name == NO_NAME, r.name.casefold()))
+        no_name = _(NO_NAME)
+        return sorted(rows, key=lambda r: (not r.own, r.name == no_name, r.name.casefold()))

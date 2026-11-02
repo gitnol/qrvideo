@@ -47,7 +47,7 @@ def test_v3_header_fills_the_qr_and_changes_every_frame() -> None:
     [
         (v3_header(k=0), "Gruppe"),
         (v3_header(k=200, m=56), "Gruppe"),
-        (v3_header(chunk=CHUNK_BYTES[L]), "Chunkgroesse"),
+        (v3_header(chunk=CHUNK_BYTES[L]), "Chunkgröße"),
     ],
 )
 def test_v3_header_validation(header: FrameHeader, reason: str) -> None:
@@ -59,7 +59,7 @@ def test_v3_length_check_counts_parity_symbols() -> None:
     """13 Chunks passen in einen Frame (14 Slots), mit 14 Paritaetssymbolen der Gruppe nicht mehr."""
     fits = FrameHeader(0, 1, 13 * V3_CHUNK, V3_CHUNK, L.ordinal, bytes(32), 3, 126, 0)
     assert FrameHeader.unpack(header_payload(fits)) == fits
-    with pytest.raises(ContainerError, match="Laenge"):
+    with pytest.raises(ContainerError, match="Länge"):
         FrameHeader.unpack(header_payload(replace(fits, group_parity=14)))
 
 

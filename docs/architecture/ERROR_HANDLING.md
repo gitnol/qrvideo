@@ -101,6 +101,10 @@ die CLI schreibt `Fehler: <Meldung>` auf stderr, ohne Traceback (`principles/LOG
 |---|---|---|---|---|
 | `qrvideo.errors.ContainerError(ValueError)` (auch als `qrvideo.container.ContainerError`) | `1` | — | stderr | kein lesbarer v2-/v3-Kopf, Frame-Index außerhalb, Gruppe ungültig, Chunks fehlen, „Gruppe g: … Datensymbole fehlen, nur … Paritätssymbole“ (v3), Länge oder SHA-256 falsch; CRC-Fehler eines v3-Daten-QR zählt nur als Ausfall im `DecodeReport` |
 | `qrvideo.crypto.GpgError(RuntimeError)` | `1` | — | stderr | gpg nicht gefunden, Empfänger fehlt/nicht vertraut, Ver-/Entschlüsseln fehlgeschlagen |
+| Meldungstexte (seit I33e, ADR-006) | — | — | — | Nutzer-sichtbare Texte über `qrvideo.i18n._` in der Sprache zum Zeitpunkt des Auslösens; `ValueError` für Programmierfehler (Geometrie in `layout`, Gruppenparameter in `erasure`, `parity_symbols`) englisch und unübersetzt |
+| `qrvideo.crypto.GpgNotFoundError(GpgError)` | `1` | — | stderr | kein gpg gefunden (GUI: Hinweis auf Gpg4win); seit I33b |
+| `qrvideo.crypto.RecipientsError(GpgError)` | `1` | — | stderr | Empfänger fehlen oder nicht voll vertraut; seit I33b |
+| `qrvideo.crypto.EncryptError(GpgError)` / `DecryptError(GpgError)` | `1` | — | stderr | gpg konnte nicht ver- bzw. entschlüsseln; seit I33b |
 | `qrvideo.crypto.UntrustedSignatureError(GpgError)` | `1` | — | stderr | keine gültige oder nicht voll vertraute Signatur; Klartext wird nicht geschrieben |
 | `qrcodegenmod.DataTooLongError(ValueError)` | `1` | — | stderr | Daten passen nicht in den QR-Code |
 | `ValueError` (u. a. `qrvideo.layout`, `qrvideo.videoio`, `qrvideo.youtube.parse_video_id`, `qrvideo.channel`) | `1` | — | stderr | ungültige Geometrie, keine Frames, keine Video-ID; seit I29/I30: Verweis kein Dateiname im Kanal-Ordner, `upload` ohne `--client-secrets` bzw. `--folder`, `--cookies-from-browser` beim Ordner-Kanal |
@@ -111,7 +115,7 @@ die CLI schreibt `Fehler: <Meldung>` auf stderr, ohne Traceback (`principles/LOG
 | ungültige Argumente (`argparse`) | `2` | — | stderr (Usage) | `SystemExit` aus `argparse`; auch unbekannter Browser bei `--cookies-from-browser` (seit I30a) |
 | `KeyboardInterrupt` (Ctrl+C) | `130` | — | stderr „Abgebrochen" | seit Fix nach I5 (`tests/test_qrvideo_cli.py::test_ctrl_c_exits_130`) |
 | andere Exceptions (z. B. `TypeError`) | Python-Default | — | Traceback | Programmierfehler, bewusst nicht abgefangen |
-| GUI (`qrvideo_gui.jobs.Job`, seit I20a): jede `Exception` im Hintergrund-Thread | — (Meldung im Fenster) | — | `ERROR` mit Traceback ins Log (Konsole) | Boundary der GUI: `qrvideo_gui.errors.friendly_message` macht daraus einen deutschen Satz; unbekannte Ausnahmen zeigen nur „Unerwarteter Fehler“ |
+| GUI (`qrvideo_gui.jobs.Job`, seit I20a): jede `Exception` im Hintergrund-Thread | — (Meldung im Fenster) | — | `ERROR` mit Traceback ins Log (Konsole) | Boundary der GUI: `qrvideo_gui.errors.friendly_message` macht daraus einen Satz in der gewählten Sprache (ADR-006), zugeordnet nur per Ausnahme-Klasse; unbekannte Ausnahmen zeigen nur „Unerwarteter Fehler“ |
 | `qrvideo_gui.jobs.Cancelled(Exception)` | — | — | kein Log | Abbrechen-Knopf; wird beim nächsten Fortschrittsschritt geworfen, `write_video` entfernt dann die halbe Datei |
 
 ---
@@ -122,7 +126,7 @@ die CLI schreibt `Fehler: <Meldung>` auf stderr, ohne Traceback (`principles/LOG
   ungültigen Argumenten — kompatibel zu nayuki/`qrcodegen`, damit Aufrufer beide austauschen können. Der Reader wirft
   `QrDecodeError(ValueError)`, intern `ReedSolomonError(ValueError)`.
 - `qrvideo` (seit I4/I7): keine gemeinsame Basis-Exception. Eigene Klassen sind `ContainerError(ValueError)`,
-  `GpgError(RuntimeError)` und `UntrustedSignatureError(GpgError)`; sonst Standard-Exceptions. Die CLI fängt
+  `GpgError(RuntimeError)` mit den Unterklassen aus der Tabelle (die GUI ordnet nur per Klasse zu, nie per Text, ADR-006); sonst Standard-Exceptions. Die CLI fängt
   `ContainerError, ValueError, OSError, RuntimeError` und gibt Exit `1`. Das weicht von der Regel „eine
   projektspezifische Basis-Exception" oben ab. **Entscheidung (Reflexion 2026-10-26):** bewusst so belassen — ein
   kleines CLI-Werkzeug mit einer Boundary; die Standard-Basisklassen genügen, eine eigene Hierarchie wäre ohne
