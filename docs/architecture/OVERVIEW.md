@@ -30,7 +30,7 @@ Architekturentscheidungen nachvollziehbar.
 - Keine eigene Kryptografie: Verschlüsselung, Signatur und Vertrauen liefert ausschließlich GnuPG.
 - Kein Livestreaming und keine Echtzeit-Übertragung (in der Thesis nur als Ausblick erwähnt) — Batch: Datei → Video.
 - Keine Schlüsselverwaltung: Schlüssel und Ownertrust pflegt der Nutzer in seinem GnuPG-Keyring.
-- Keine GUI und kein Webdienst; Plattform der Thesis war Windows, Linux-Lauffähigkeit ist Ziel der Modernisierung,
+- Kein Webdienst (die Desktop-Oberfläche `qrvideo-gui` kam mit ADR-004 hinzu); Plattform der Thesis war Windows, Linux-Lauffähigkeit ist Ziel der Modernisierung,
   macOS wird nicht aktiv geprüft.
 
 Änderungen an dieser Liste sind eine Architekturentscheidung → ADR erforderlich.

@@ -1,18 +1,37 @@
 <p align="center"><img src="docs/images/logo.svg" width="112" alt="Canal de vídeo con códigos QR: logotipo"></p>
 
-# Thesis Revival 2026
+<h1 align="center">Thesis Revival 2026</h1>
 
-*Deutsche Fassung: [README.md](README.md) · English version: [README.en.md](README.en.md)*
+<p align="center"><b>Enviar archivos cifrados como un vídeo de códigos QR, por YouTube o por una carpeta compartida.</b></p>
 
-Recuperación de una tesis de grado de 2019 sobre el intercambio de datos mediante vídeos de códigos QR:
-cifrar archivos con GnuPG, codificarlos como un vídeo de códigos QR, transferirlo por YouTube y recuperar el
-archivo.
+<p align="center">
+  <a href="pyproject.toml"><img src="https://img.shields.io/badge/python-%E2%89%A5%203.11-3776AB?logo=python&amp;logoColor=white" alt="Python ≥ 3.11"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-16a34a" alt="MIT"></a>
+  <a href="#idiomas"><img src="https://img.shields.io/badge/idiomas-DE%20%C2%B7%20EN%20%C2%B7%20ES-0d9488" alt="Idiomas: DE, EN, ES"></a>
+  <img src="https://img.shields.io/badge/crypto-GnuPG-0b1f3a" alt="GnuPG">
+</p>
+
+<p align="center"><a href="README.md">Deutsch</a> · <a href="README.en.md">English</a></p>
+
+Recuperación de una tesis de grado de 2019: los archivos se cifran y firman con GnuPG, se codifican como un
+vídeo de códigos QR, se transfieren por YouTube o por una carpeta compartida y el destinatario los recupera.
+Reconstruido desde cero en 2026: más rápido, tolerante a la pérdida de fotogramas enteros, con interfaz
+gráfica y línea de comandos en tres idiomas.
 
 **Primeros pasos:** instalación y uso paso a paso, con capturas de pantalla, en la
 [Guía de usuario](docs/GUIA_DE_USUARIO.md).
 
-> Esta traducción al español no ha sido revisada todavía por una persona nativa. Las correcciones son bienvenidas
-> (véase [Idiomas](#idiomas)).
+## De un vistazo
+
+<p align="center"><img src="docs/images/es/stats.svg" alt="Cifras clave"></p>
+
+<p align="center"><img src="docs/images/es/pipeline.svg" alt="Flujo: archivo → GnuPG → vídeo QR → canal → archivo"></p>
+
+<p align="center"><img src="docs/images/es/speed.svg" alt="Tiempo por código QR: original, tesis 2019, 2026"></p>
+
+## Arquitectura
+
+<p align="center"><img src="docs/images/es/architecture.svg" alt="Arquitectura: qrvideo-gui y qrvideo CLI → núcleo qrvideo → qrcodegenmod; externo GnuPG, ffmpeg, yt-dlp, YouTube Data API, carpeta compartida"></p>
 
 | Parte | Ubicación |
 |---|---|
@@ -23,44 +42,24 @@ archivo.
 | Guía de usuario | [`docs/GUIA_DE_USUARIO.md`](docs/GUIA_DE_USUARIO.md) (inglés: [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md), alemán: [`docs/BEDIENUNGSANLEITUNG.md`](docs/BEDIENUNGSANLEITUNG.md)) |
 | Arquitectura, decisiones (ADR), modelo de amenazas (en alemán) | [`docs/architecture/`](docs/architecture/), [`docs/security/`](docs/security/THREAT_MODEL.md) |
 
-## De un vistazo
-
-<p align="center"><img src="docs/images/es/stats.svg" alt="Cifras clave"></p>
-
-<p align="center"><img src="docs/images/es/pipeline.svg" alt="Flujo: archivo → GnuPG → vídeo QR → canal → archivo"></p>
-
-<p align="center"><img src="docs/images/es/speed.svg" alt="Tiempo por código QR: original, tesis 2019, 2026"></p>
-
-## Agradecimiento a Project Nayuki
-
-El núcleo de este proyecto es `qrcodegenmod`, una bifurcación de la excelente
-[**QR Code generator library**](https://github.com/nayuki/QR-Code-generator) de
-[Project Nayuki](https://www.nayuki.io/page/qr-code-generator-library) (licencia MIT), commit base
-[`6e088f7`](https://github.com/nayuki/QR-Code-generator/commit/6e088f7) del 13-09-2019.
-
-La biblioteca de Nayuki es un modelo de cómo implementar un estándar: completa según ISO/IEC 18004, con el mismo
-comportamiento en varios lenguajes, sin dependencias y escrita con tanta claridad que cada paso (segmentos,
-Reed-Solomon, máscaras, penalizaciones) se puede seguir directamente. Esa claridad hizo posible la tesis de 2019:
-su base limpia permitió añadir las optimizaciones de forma precisa. La modernización de 2026 también se apoya en
-ella: el `qrcodegen` 1.8.0 oficial sirve de oráculo para las pruebas, y `qrcodegenmod` genera códigos QR idénticos
-bit a bit en todas las versiones, niveles de corrección de errores y máscaras.
-
-Muchas gracias a Nayuki por este gran trabajo y por ponerlo a disposición de todos.
-
-El proyecto se desarrolló siguiendo un proceso interno de documentación (estado, reflexiones, registro de
-cambios). Esos registros no forman parte de este repositorio; las referencias a ellos en `docs/` apuntan a ese
-material interno.
-
 ## Inicio rápido
 
-El entorno virtual está fuera del repositorio (útil si la carpeta se sincroniza):
+Requisitos: [uv](https://docs.astral.sh/uv/) (descarga Python ≥ 3.11 si hace falta) y, para enviar y
+recibir, GnuPG ≥ 2.4.9 (Gpg4win en Windows). ffmpeg viene con `imageio-ffmpeg`.
 
 ```powershell
-$env:UV_PROJECT_ENVIRONMENT = "$env:LOCALAPPDATA\venvs\revival_2026"
+git clone https://github.com/gitnol/qrvideo.git
+cd qrvideo
 uv sync --all-extras
-uv run pytest
-uv run python bench/bench_qrcode.py
+uv run qrvideo-gui                     # abrir la ventana
+uv run pytest                          # pruebas
+uv run python bench/bench_qrcode.py    # medir la velocidad
 ```
+
+Si la carpeta se sincroniza (p. ej. con un cliente en la nube), coloque el entorno virtual fuera con
+`UV_PROJECT_ENVIRONMENT`.
+
+Como biblioteca:
 
 ```python
 import qrcodegenmod as q
@@ -129,3 +128,23 @@ Añadir un idioma (p. ej. francés, `fr`):
 
 Las traducciones al español no han sido revisadas por una persona nativa; las correcciones del `.po` son muy
 bienvenidas.
+
+## Agradecimiento a Project Nayuki
+
+El núcleo de este proyecto es `qrcodegenmod`, una bifurcación de la excelente
+[**QR Code generator library**](https://github.com/nayuki/QR-Code-generator) de
+[Project Nayuki](https://www.nayuki.io/page/qr-code-generator-library) (licencia MIT), commit base
+[`6e088f7`](https://github.com/nayuki/QR-Code-generator/commit/6e088f7) del 13-09-2019.
+
+La biblioteca de Nayuki es un modelo de cómo implementar un estándar: completa según ISO/IEC 18004, con el mismo
+comportamiento en varios lenguajes, sin dependencias y escrita con tanta claridad que cada paso (segmentos,
+Reed-Solomon, máscaras, penalizaciones) se puede seguir directamente. Esa claridad hizo posible la tesis de 2019:
+su base limpia permitió añadir las optimizaciones de forma precisa. La modernización de 2026 también se apoya en
+ella: el `qrcodegen` 1.8.0 oficial sirve de oráculo para las pruebas, y `qrcodegenmod` genera códigos QR idénticos
+bit a bit en todas las versiones, niveles de corrección de errores y máscaras.
+
+Muchas gracias a Nayuki por este gran trabajo y por ponerlo a disposición de todos.
+
+El proyecto se desarrolló siguiendo un proceso interno de documentación (estado, reflexiones, registro de
+cambios). Esos registros no forman parte de este repositorio; las referencias a ellos en `docs/` apuntan a ese
+material interno.

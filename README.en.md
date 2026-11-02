@@ -1,14 +1,36 @@
 <p align="center"><img src="docs/images/logo.svg" width="112" alt="QR code video channel: logo"></p>
 
-# Thesis Revival 2026
+<h1 align="center">Thesis Revival 2026</h1>
 
-*Deutsche Fassung: [README.md](README.md) · Versión en español: [README.es.md](README.es.md)*
+<p align="center"><b>Send files encrypted as a video of QR codes – via YouTube or a shared folder.</b></p>
 
-Revival of a 2019 bachelor thesis on exchanging data through videos made of QR codes:
-encrypt files with GnuPG, encode them as a video of QR codes, transfer it via YouTube and recover the file.
+<p align="center">
+  <a href="pyproject.toml"><img src="https://img.shields.io/badge/python-%E2%89%A5%203.11-3776AB?logo=python&amp;logoColor=white" alt="Python ≥ 3.11"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-16a34a" alt="MIT"></a>
+  <a href="#languages"><img src="https://img.shields.io/badge/languages-DE%20%C2%B7%20EN%20%C2%B7%20ES-0d9488" alt="Languages: DE, EN, ES"></a>
+  <img src="https://img.shields.io/badge/crypto-GnuPG-0b1f3a" alt="GnuPG">
+</p>
+
+<p align="center"><a href="README.md">Deutsch</a> · <a href="README.es.md">Español</a></p>
+
+Revival of a 2019 bachelor thesis: files are encrypted and signed with GnuPG, encoded as a video of QR
+codes, transferred via YouTube or a shared folder and recovered by the recipient. Rebuilt from scratch in
+2026: faster, tolerant of whole lost frames, with a desktop interface and command line in three languages.
 
 **Getting started:** installation and step-by-step use, with screenshots, in the
 [User Guide](docs/USER_GUIDE.md).
+
+## At a glance
+
+<p align="center"><img src="docs/images/en/stats.svg" alt="Key figures"></p>
+
+<p align="center"><img src="docs/images/en/pipeline.svg" alt="Flow: file → GnuPG → QR video → channel → file"></p>
+
+<p align="center"><img src="docs/images/en/speed.svg" alt="Time per QR code: original, thesis 2019, 2026"></p>
+
+## Architecture
+
+<p align="center"><img src="docs/images/en/architecture.svg" alt="Architecture: qrvideo-gui and qrvideo CLI → core qrvideo → qrcodegenmod; external GnuPG, ffmpeg, yt-dlp, YouTube Data API, shared folder"></p>
 
 | Part | Location |
 |---|---|
@@ -19,43 +41,24 @@ encrypt files with GnuPG, encode them as a video of QR codes, transfer it via Yo
 | User guide | [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) (German: [`docs/BEDIENUNGSANLEITUNG.md`](docs/BEDIENUNGSANLEITUNG.md), Spanish: [`docs/GUIA_DE_USUARIO.md`](docs/GUIA_DE_USUARIO.md)) |
 | Architecture, decisions (ADR), threat model (German) | [`docs/architecture/`](docs/architecture/), [`docs/security/`](docs/security/THREAT_MODEL.md) |
 
-## At a glance
-
-<p align="center"><img src="docs/images/en/stats.svg" alt="Key figures"></p>
-
-<p align="center"><img src="docs/images/en/pipeline.svg" alt="Flow: file → GnuPG → QR video → channel → file"></p>
-
-<p align="center"><img src="docs/images/en/speed.svg" alt="Time per QR code: original, thesis 2019, 2026"></p>
-
-## Thanks to Project Nayuki
-
-At the heart of this project is `qrcodegenmod`, a fork of the excellent
-[**QR Code generator library**](https://github.com/nayuki/QR-Code-generator) by
-[Project Nayuki](https://www.nayuki.io/page/qr-code-generator-library) (MIT licence), base commit
-[`6e088f7`](https://github.com/nayuki/QR-Code-generator/commit/6e088f7) from 2019-09-13.
-
-Nayuki's library is a model of how to implement a standard: complete according to ISO/IEC 18004, with identical
-behaviour across several languages, free of dependencies and written so clearly that every step (segments,
-Reed-Solomon, masks, penalty scores) can be followed directly. That clarity is what made the 2019 thesis possible
-in the first place – its clean foundation allowed the optimisations to be added in a targeted way. The 2026
-modernisation relies on it as well: the official `qrcodegen` 1.8.0 serves as the test oracle, and `qrcodegenmod`
-produces bit-identical QR codes for every version, error-correction level and mask.
-
-Many thanks to Nayuki for this great work and for making it freely available.
-
-The project was developed following an internal documentation process (status, reflections, changelog). Those
-project logs are not part of this repository; references to them in `docs/` point to that internal material.
-
 ## Quick start
 
-The virtual environment lives outside the repository (useful if the folder is synchronised):
+Requirements: [uv](https://docs.astral.sh/uv/) (fetches Python ≥ 3.11 if needed) and, for sending and
+receiving, GnuPG ≥ 2.4.9 (Gpg4win on Windows). ffmpeg comes with `imageio-ffmpeg`.
 
 ```powershell
-$env:UV_PROJECT_ENVIRONMENT = "$env:LOCALAPPDATA\venvs\revival_2026"
+git clone https://github.com/gitnol/qrvideo.git
+cd qrvideo
 uv sync --all-extras
-uv run pytest
-uv run python bench/bench_qrcode.py
+uv run qrvideo-gui                     # open the window
+uv run pytest                          # tests
+uv run python bench/bench_qrcode.py    # measure speed
 ```
+
+If the folder is synchronised (e.g. by a cloud client), move the virtual environment elsewhere with
+`UV_PROJECT_ENVIRONMENT`.
+
+As a library:
 
 ```python
 import qrcodegenmod as q
@@ -123,3 +126,22 @@ Adding a language (e.g. French, `fr`):
    to `DEMO`).
 
 The Spanish texts have not been reviewed by a native speaker; corrections to the `.po` file are welcome.
+
+## Thanks to Project Nayuki
+
+At the heart of this project is `qrcodegenmod`, a fork of the excellent
+[**QR Code generator library**](https://github.com/nayuki/QR-Code-generator) by
+[Project Nayuki](https://www.nayuki.io/page/qr-code-generator-library) (MIT licence), base commit
+[`6e088f7`](https://github.com/nayuki/QR-Code-generator/commit/6e088f7) from 2019-09-13.
+
+Nayuki's library is a model of how to implement a standard: complete according to ISO/IEC 18004, with identical
+behaviour across several languages, free of dependencies and written so clearly that every step (segments,
+Reed-Solomon, masks, penalty scores) can be followed directly. That clarity is what made the 2019 thesis possible
+in the first place – its clean foundation allowed the optimisations to be added in a targeted way. The 2026
+modernisation relies on it as well: the official `qrcodegen` 1.8.0 serves as the test oracle, and `qrcodegenmod`
+produces bit-identical QR codes for every version, error-correction level and mask.
+
+Many thanks to Nayuki for this great work and for making it freely available.
+
+The project was developed following an internal documentation process (status, reflections, changelog). Those
+project logs are not part of this repository; references to them in `docs/` point to that internal material.

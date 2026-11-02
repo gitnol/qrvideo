@@ -30,7 +30,12 @@ def test_committed_graphics_match_the_generator() -> None:
 def test_every_language_gets_its_own_charts() -> None:
     names = {path.relative_to(graphics_tool().IMAGES).as_posix() for path in graphics_tool().build()}
     for lang in ("de", "en", "es"):
-        assert {f"{lang}/stats.svg", f"{lang}/speed.svg", f"{lang}/pipeline.svg"} <= names
+        assert {
+            f"{lang}/stats.svg",
+            f"{lang}/speed.svg",
+            f"{lang}/pipeline.svg",
+            f"{lang}/architecture.svg",
+        } <= names
     assert "logo.svg" in names
 
 
@@ -52,3 +57,10 @@ def test_building_charts_keeps_the_process_language() -> None:
 
     graphics_tool().stats_strip("es")
     assert current_language() == "de"
+
+
+def test_architecture_shows_the_three_layers_and_the_external_tools() -> None:
+    svg = graphics_tool().architecture("en")
+    for name in ("qrvideo-gui", "qrvideo", "qrcodegenmod", "GnuPG", "ffmpeg", "yt-dlp", "import-linter"):
+        assert name in svg
+    assert "Sprachen (gettext)" in graphics_tool().architecture("de")

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 370" width="760" height="370" role="img" aria-label="qrvideo-gui / qrvideo → qrvideo → qrcodegenmod; Externo: GnuPG (gpg), ffmpeg, yt-dlp, YouTube Data API, carpeta compartida">
+<title>qrvideo-gui / qrvideo → qrvideo → qrcodegenmod; Externo: GnuPG (gpg), ffmpeg, yt-dlp, YouTube Data API, carpeta compartida</title>
+<style>
+text{font-family:'Segoe UI',system-ui,-apple-system,Helvetica,Arial,sans-serif;fill:#1f2937} .muted{fill:#6b7280} .accent{fill:#d97706} .box{fill:#f8fafc;stroke:#cbd5e1}
+.arrow{stroke:#94a3b8;fill:none} .tip{fill:#94a3b8} .core{fill:#f0fdfa;stroke:#5eead4}
+.chip{fill:#ffffff;stroke:#99f6e4} .dash{stroke:#94a3b8;stroke-dasharray:4 4;fill:none}
+@media (prefers-color-scheme: dark){text{fill:#e5e7eb} .muted{fill:#9ca3af} .accent{fill:#fbbf24}
+.box{fill:#111827;stroke:#374151} .arrow{stroke:#6b7280} .tip{fill:#6b7280}
+.core{fill:#042f2e;stroke:#0f766e} .chip{fill:#0b1f1e;stroke:#115e59} .dash{stroke:#6b7280}}
+</style>
+<text x="4" y="16" font-size="12" class="muted">Interfaz</text>
+<rect class="box" x="4" y="24" width="272" height="56" rx="12" stroke-width="1.5"/>
+<text x="140" y="49" font-size="16" font-weight="700" text-anchor="middle">qrvideo-gui</text>
+<text x="140" y="68" font-size="11" class="muted" text-anchor="middle">ventana (Tkinter), presentadores sin Tk</text>
+<rect class="box" x="292" y="24" width="272" height="56" rx="12" stroke-width="1.5"/>
+<text x="428" y="49" font-size="16" font-weight="700" text-anchor="middle">qrvideo CLI</text>
+<text x="428" y="68" font-size="11" class="muted" text-anchor="middle">línea de comandos</text>
+<path class="arrow" d="M284 84 V96" stroke-width="2"/>
+<path class="tip" d="M284 102 l-5 -7 h10 z"/>
+<rect class="core" x="4" y="106" width="560" height="150" rx="12" stroke-width="1.5"/>
+<text x="284" y="130" font-size="16" font-weight="700" text-anchor="middle">qrvideo</text>
+<text x="284" y="148" font-size="11" class="muted" text-anchor="middle">núcleo: transferencia, canales, claves</text>
+<rect class="chip" x="16" y="160" width="170" height="36" rx="8" stroke-width="1.2"/>
+<text x="101" y="183" font-size="12" font-weight="600" text-anchor="middle">Contenedor v3 + paridad</text>
+<rect class="chip" x="198" y="160" width="170" height="36" rx="8" stroke-width="1.2"/>
+<text x="283" y="183" font-size="12" font-weight="600" text-anchor="middle">Cifrado (GnuPG)</text>
+<rect class="chip" x="380" y="160" width="170" height="36" rx="8" stroke-width="1.2"/>
+<text x="465" y="183" font-size="12" font-weight="600" text-anchor="middle">Vídeo (ffmpeg)</text>
+<rect class="chip" x="16" y="206" width="170" height="36" rx="8" stroke-width="1.2"/>
+<text x="101" y="229" font-size="12" font-weight="600" text-anchor="middle">Canal: YouTube / carpeta</text>
+<rect class="chip" x="198" y="206" width="170" height="36" rx="8" stroke-width="1.2"/>
+<text x="283" y="229" font-size="12" font-weight="600" text-anchor="middle">Handshake</text>
+<rect class="chip" x="380" y="206" width="170" height="36" rx="8" stroke-width="1.2"/>
+<text x="465" y="229" font-size="12" font-weight="600" text-anchor="middle">Idiomas (gettext)</text>
+<path class="arrow" d="M284 260 V272" stroke-width="2"/>
+<path class="tip" d="M284 278 l-5 -7 h10 z"/>
+<rect class="box" x="4" y="282" width="560" height="56" rx="12" stroke-width="1.5"/>
+<text x="284" y="307" font-size="16" font-weight="700" text-anchor="middle">qrcodegenmod</text>
+<text x="284" y="326" font-size="11" class="muted" text-anchor="middle">genera (NumPy, Numba) y lee códigos QR (lector propio)</text>
+<rect class="box" x="584" y="24" width="172" height="314" rx="12" stroke-width="1.5"/>
+<text x="670" y="50" font-size="14" font-weight="700" text-anchor="middle">Externo</text>
+<text x="600" y="84" font-size="12" >• GnuPG (gpg)</text>
+<text x="600" y="114" font-size="12" >• ffmpeg</text>
+<text x="600" y="144" font-size="12" >• yt-dlp</text>
+<text x="600" y="174" font-size="12" >• YouTube Data API</text>
+<text x="600" y="204" font-size="12" >• carpeta compartida</text>
+<path class="dash" d="M564 181 H584" stroke-width="1.5"/>
+<text x="4" y="362" font-size="11" class="muted">Las dependencias solo van hacia abajo, comprobado con import-linter</text>
+</svg>

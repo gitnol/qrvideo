@@ -36,9 +36,11 @@ YOUTUBE_UNREADABLE = 0
 FONT = "font-family:'Segoe UI',system-ui,-apple-system,Helvetica,Arial,sans-serif"
 STYLE = f"""<style>
 text{{{FONT};fill:#1f2937}} .muted{{fill:#6b7280}} .accent{{fill:#d97706}} .box{{fill:#f8fafc;stroke:#cbd5e1}}
-.arrow{{stroke:#94a3b8;fill:none}} .tip{{fill:#94a3b8}}
+.arrow{{stroke:#94a3b8;fill:none}} .tip{{fill:#94a3b8}} .core{{fill:#f0fdfa;stroke:#5eead4}}
+.chip{{fill:#ffffff;stroke:#99f6e4}} .dash{{stroke:#94a3b8;stroke-dasharray:4 4;fill:none}}
 @media (prefers-color-scheme: dark){{text{{fill:#e5e7eb}} .muted{{fill:#9ca3af}} .accent{{fill:#fbbf24}}
-.box{{fill:#111827;stroke:#374151}} .arrow{{stroke:#6b7280}} .tip{{fill:#6b7280}}}}
+.box{{fill:#111827;stroke:#374151}} .arrow{{stroke:#6b7280}} .tip{{fill:#6b7280}}
+.core{{fill:#042f2e;stroke:#0f766e}} .chip{{fill:#0b1f1e;stroke:#115e59}} .dash{{stroke:#6b7280}}}}
 </style>"""
 
 BAR_COLORS = ("#94a3b8", "#38bdf8", "#14b8a6", "#f59e0b")
@@ -110,6 +112,77 @@ TEXTS: dict[str, Texts] = {
             ("Canal", "YouTube o", "carpeta compartida"),
             ("Archivo", "descifrado,", "firma verificada"),
         ),
+    ),
+}
+
+
+@dataclass(frozen=True)
+class ArchTexts:
+    presentation: str
+    gui_sub: str
+    cli_sub: str
+    core_sub: str
+    chips: tuple[str, str, str, str, str, str]
+    library_sub: str
+    external: str
+    services: tuple[str, str, str, str, str]
+    footer: str
+
+
+ARCH: dict[str, ArchTexts] = {
+    "de": ArchTexts(
+        presentation="Bedienung",
+        gui_sub="Fenster (Tkinter), Presenter ohne Tk",
+        cli_sub="Kommandozeile",
+        core_sub="Kern: Übertragung, Kanäle, Schlüssel",
+        chips=(
+            "Container v3 + Parität",
+            "Krypto (GnuPG)",
+            "Video (ffmpeg)",
+            "Kanal: YouTube / Ordner",
+            "Handshake",
+            "Sprachen (gettext)",
+        ),
+        library_sub="QR-Codes erzeugen (NumPy, Numba) und lesen (eigener Reader)",
+        external="Extern",
+        services=("GnuPG (gpg)", "ffmpeg", "yt-dlp", "YouTube Data API", "Gemeinsamer Ordner"),
+        footer="Abhängigkeiten nur von oben nach unten, geprüft mit import-linter",
+    ),
+    "en": ArchTexts(
+        presentation="User interface",
+        gui_sub="window (Tkinter), presenters without Tk",
+        cli_sub="command line",
+        core_sub="core: transfer, channels, keys",
+        chips=(
+            "Container v3 + parity",
+            "Crypto (GnuPG)",
+            "Video (ffmpeg)",
+            "Channel: YouTube / folder",
+            "Handshake",
+            "Languages (gettext)",
+        ),
+        library_sub="generates (NumPy, Numba) and reads QR codes (own reader)",
+        external="External",
+        services=("GnuPG (gpg)", "ffmpeg", "yt-dlp", "YouTube Data API", "shared folder"),
+        footer="Dependencies point downwards only, checked with import-linter",
+    ),
+    "es": ArchTexts(
+        presentation="Interfaz",
+        gui_sub="ventana (Tkinter), presentadores sin Tk",
+        cli_sub="línea de comandos",
+        core_sub="núcleo: transferencia, canales, claves",
+        chips=(
+            "Contenedor v3 + paridad",
+            "Cifrado (GnuPG)",
+            "Vídeo (ffmpeg)",
+            "Canal: YouTube / carpeta",
+            "Handshake",
+            "Idiomas (gettext)",
+        ),
+        library_sub="genera (NumPy, Numba) y lee códigos QR (lector propio)",
+        external="Externo",
+        services=("GnuPG (gpg)", "ffmpeg", "yt-dlp", "YouTube Data API", "carpeta compartida"),
+        footer="Las dependencias solo van hacia abajo, comprobado con import-linter",
     ),
 }
 
@@ -218,6 +291,47 @@ def pipeline(lang: str) -> str:
     return _svg(760, 104, label, body)
 
 
+def _layer(x: int, y: int, width: int, title: str, sub: str) -> str:
+    return (
+        f'<rect class="box" x="{x}" y="{y}" width="{width}" height="56" rx="12" stroke-width="1.5"/>\n'
+        + _text(x + width / 2, y + 25, title, 16, 'font-weight="700" text-anchor="middle"')
+        + _text(x + width / 2, y + 44, sub, 11, 'class="muted" text-anchor="middle"')
+    )
+
+
+def _down(x: int, y: int) -> str:
+    return (
+        f'<path class="arrow" d="M{x} {y} V{y + 12}" stroke-width="2"/>\n'
+        f'<path class="tip" d="M{x} {y + 18} l-5 -7 h10 z"/>\n'
+    )
+
+
+def architecture(lang: str) -> str:
+    """Drei Schichten (Bedienung → qrvideo → qrcodegenmod) und die externen Programme und Dienste."""
+    texts = ARCH[lang]
+    body = _text(4, 16, texts.presentation, 12, 'class="muted"')
+    body += _layer(4, 24, 272, "qrvideo-gui", texts.gui_sub)
+    body += _layer(292, 24, 272, "qrvideo CLI", texts.cli_sub)
+    body += _down(284, 84)
+    body += '<rect class="core" x="4" y="106" width="560" height="150" rx="12" stroke-width="1.5"/>\n'
+    body += _text(284, 130, "qrvideo", 16, 'font-weight="700" text-anchor="middle"')
+    body += _text(284, 148, texts.core_sub, 11, 'class="muted" text-anchor="middle"')
+    for i, chip in enumerate(texts.chips):
+        x, y = 16 + (i % 3) * 182, 160 + (i // 3) * 46
+        body += f'<rect class="chip" x="{x}" y="{y}" width="170" height="36" rx="8" stroke-width="1.2"/>\n'
+        body += _text(x + 85, y + 23, chip, 12, 'font-weight="600" text-anchor="middle"')
+    body += _down(284, 260)
+    body += _layer(4, 282, 560, "qrcodegenmod", texts.library_sub)
+    body += '<rect class="box" x="584" y="24" width="172" height="314" rx="12" stroke-width="1.5"/>\n'
+    body += _text(670, 50, texts.external, 14, 'font-weight="700" text-anchor="middle"')
+    for i, service in enumerate(texts.services):
+        body += _text(600, 84 + i * 30, f"• {service}", 12)
+    body += '<path class="dash" d="M564 181 H584" stroke-width="1.5"/>\n'
+    body += _text(4, 362, texts.footer, 11, 'class="muted"')
+    label = f"qrvideo-gui / qrvideo → qrvideo → qrcodegenmod; {texts.external}: " + ", ".join(texts.services)
+    return _svg(760, 370, label, body)
+
+
 def logo() -> str:
     """Filmbild mit Perforation; darin ein QR-Code aus Suchmustern, Datenpunkten und einem Play-Dreieck."""
     finders = ""
@@ -258,6 +372,7 @@ def build() -> dict[Path, str]:
         files[IMAGES / lang / "stats.svg"] = stats_strip(lang)
         files[IMAGES / lang / "speed.svg"] = speed_chart(lang)
         files[IMAGES / lang / "pipeline.svg"] = pipeline(lang)
+        files[IMAGES / lang / "architecture.svg"] = architecture(lang)
     return files
 
 

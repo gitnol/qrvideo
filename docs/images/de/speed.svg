@@ -2,9 +2,11 @@
 <title>211× schneller als das Original</title>
 <style>
 text{font-family:'Segoe UI',system-ui,-apple-system,Helvetica,Arial,sans-serif;fill:#1f2937} .muted{fill:#6b7280} .accent{fill:#d97706} .box{fill:#f8fafc;stroke:#cbd5e1}
-.arrow{stroke:#94a3b8;fill:none} .tip{fill:#94a3b8}
+.arrow{stroke:#94a3b8;fill:none} .tip{fill:#94a3b8} .core{fill:#f0fdfa;stroke:#5eead4}
+.chip{fill:#ffffff;stroke:#99f6e4} .dash{stroke:#94a3b8;stroke-dasharray:4 4;fill:none}
 @media (prefers-color-scheme: dark){text{fill:#e5e7eb} .muted{fill:#9ca3af} .accent{fill:#fbbf24}
-.box{fill:#111827;stroke:#374151} .arrow{stroke:#6b7280} .tip{fill:#6b7280}}
+.box{fill:#111827;stroke:#374151} .arrow{stroke:#6b7280} .tip{fill:#6b7280}
+.core{fill:#042f2e;stroke:#0f766e} .chip{fill:#0b1f1e;stroke:#115e59} .dash{stroke:#6b7280}}
 </style>
 <text x="16" y="34" font-size="22" font-weight="700">211× schneller als das Original</text>
 <text x="16" y="58" font-size="13" class="muted">Zeit pro QR-Code (Version 40) · kürzer ist besser · logarithmische Skala</text>
