@@ -1,5 +1,7 @@
 # Thesis Revival 2026
 
+*English version: [README.en.md](README.en.md)*
+
 Wiederbelebung einer Bachelor-Thesis von 2019 zum Datenaustausch über Videos aus QR-Codes:
 Dateien mit GnuPG verschlüsseln, als Video aus QR-Codes kodieren, über YouTube übertragen und zurückgewinnen.
 
@@ -12,7 +14,7 @@ Dateien mit GnuPG verschlüsseln, als Video aus QR-Codes kodieren, über YouTube
 | Übertragung `qrvideo` (Befehl `qrvideo`) | `src/qrvideo/` |
 | Bedienoberfläche (Befehl `qrvideo-gui`) | `src/qrvideo_gui/` |
 | Thesis-Stand 2019 (unverändert) | `legacy/` |
-| Bedienungsanleitung | [`docs/BEDIENUNGSANLEITUNG.md`](docs/BEDIENUNGSANLEITUNG.md) |
+| Bedienungsanleitung | [`docs/BEDIENUNGSANLEITUNG.md`](docs/BEDIENUNGSANLEITUNG.md) (English: [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md)) |
 | Architektur, Entscheidungen (ADR), Bedrohungsmodell | [`docs/architecture/`](docs/architecture/), [`docs/security/`](docs/security/THREAT_MODEL.md) |
 
 ## Dank an Project Nayuki

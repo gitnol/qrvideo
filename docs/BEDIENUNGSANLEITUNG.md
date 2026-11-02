@@ -1,5 +1,7 @@
 # Bedienungsanleitung – qrvideo
 
+*English version: [USER_GUIDE.md](USER_GUIDE.md)*
+
 Für alle, die Dateien mit `qrvideo` verschlüsselt als Video übertragen möchten. Vorwissen über das Projekt ist
 nicht nötig. Teil 1–9 beschreiben die Bedienoberfläche, der Anhang die Kommandozeile. Die Bilder zeigen
 Demo-Schlüssel („Alice Beispiel“, „Bob Beispiel“).
