@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/images/logo.svg" width="112" alt="QR-Code-Video-Kanal: Logo"></p>
+
 # Thesis Revival 2026
 
 *English version: [README.en.md](README.en.md) · Versión en español: [README.es.md](README.es.md)*
@@ -17,6 +19,14 @@ Dateien mit GnuPG verschlüsseln, als Video aus QR-Codes kodieren, über YouTube
 | Bedienungsanleitung | [`docs/BEDIENUNGSANLEITUNG.md`](docs/BEDIENUNGSANLEITUNG.md) (English: [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md), español: [`docs/GUIA_DE_USUARIO.md`](docs/GUIA_DE_USUARIO.md)) |
 | Projektdokumentation (docs_template) | `docs/` |
 | Fortschritt als Seite | `FORTSCHRITT.html` |
+
+## Auf einen Blick
+
+<p align="center"><img src="docs/images/de/stats.svg" alt="Kennzahlen"></p>
+
+<p align="center"><img src="docs/images/de/pipeline.svg" alt="Ablauf: Datei → GnuPG → QR-Video → Kanal → Datei"></p>
+
+<p align="center"><img src="docs/images/de/speed.svg" alt="Zeit pro QR-Code: Original, Thesis 2019, 2026"></p>
 
 ## Dank an Project Nayuki
 

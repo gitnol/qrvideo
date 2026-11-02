@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 120" width="760" height="120" role="img" aria-label="211× generación de QR más rápida · 2,4 s de vídeo para 2,55 MB · 0 códigos QR ilegibles">
+<title>211× generación de QR más rápida · 2,4 s de vídeo para 2,55 MB · 0 códigos QR ilegibles</title>
+<style>
+text{font-family:'Segoe UI',system-ui,-apple-system,Helvetica,Arial,sans-serif;fill:#1f2937} .muted{fill:#6b7280} .accent{fill:#d97706} .box{fill:#f8fafc;stroke:#cbd5e1}
+.arrow{stroke:#94a3b8;fill:none} .tip{fill:#94a3b8}
+@media (prefers-color-scheme: dark){text{fill:#e5e7eb} .muted{fill:#9ca3af} .accent{fill:#fbbf24}
+.box{fill:#111827;stroke:#374151} .arrow{stroke:#6b7280} .tip{fill:#6b7280}}
+</style>
+<rect class="box" x="4" y="4" width="240" height="112" rx="12" stroke-width="1.5"/>
+<text x="124" y="50" font-size="36" class="accent" font-weight="800" text-anchor="middle">211×</text>
+<text x="124" y="78" font-size="14" font-weight="600" text-anchor="middle">generación de QR más rápida</text>
+<text x="124" y="98" font-size="12" class="muted" text-anchor="middle">que el original</text>
+<rect class="box" x="256" y="4" width="240" height="112" rx="12" stroke-width="1.5"/>
+<text x="376" y="50" font-size="36" class="accent" font-weight="800" text-anchor="middle">2,4 s</text>
+<text x="376" y="78" font-size="14" font-weight="600" text-anchor="middle">de vídeo para 2,55 MB</text>
+<text x="376" y="98" font-size="12" class="muted" text-anchor="middle">30 fps, 15 códigos QR por fotograma</text>
+<rect class="box" x="508" y="4" width="240" height="112" rx="12" stroke-width="1.5"/>
+<text x="628" y="50" font-size="36" class="accent" font-weight="800" text-anchor="middle">0</text>
+<text x="628" y="78" font-size="14" font-weight="600" text-anchor="middle">códigos QR ilegibles</text>
+<text x="628" y="98" font-size="12" class="muted" text-anchor="middle">tras YouTube (659 códigos QR)</text>
+</svg>

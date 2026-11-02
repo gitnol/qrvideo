@@ -58,7 +58,7 @@ die Altpakete der Thesis (u. a. `pyzbar`, `youtube_dl`, `oauth2client`); sie sin
 
 `ffmpeg` — `imageio-ffmpeg` (`IMAGEIO_FFMPEG_EXE`, sonst das gebündelte Binary).
 
-Ein Projektordner `tools/bin/` für lokale Binaries wird nicht verwendet (`tools/` enthält nur `git-hooks/`).
+Ein Projektordner `tools/bin/` für lokale Binaries wird nicht verwendet (`tools/` enthält `git-hooks/` und Python-Werkzeuge, siehe `PROJECT_LAYOUT.md`).
 
 ---
 

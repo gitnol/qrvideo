@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/images/logo.svg" width="112" alt="Canal de vídeo con códigos QR: logotipo"></p>
+
 # Thesis Revival 2026
 
 *Deutsche Fassung: [README.md](README.md) · English version: [README.en.md](README.en.md)*
@@ -20,6 +22,14 @@ archivo.
 | Código de la tesis de 2019 (sin cambios) | `legacy/` |
 | Guía de usuario | [`docs/GUIA_DE_USUARIO.md`](docs/GUIA_DE_USUARIO.md) (inglés: [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md), alemán: [`docs/BEDIENUNGSANLEITUNG.md`](docs/BEDIENUNGSANLEITUNG.md)) |
 | Arquitectura, decisiones (ADR), modelo de amenazas (en alemán) | [`docs/architecture/`](docs/architecture/), [`docs/security/`](docs/security/THREAT_MODEL.md) |
+
+## De un vistazo
+
+<p align="center"><img src="docs/images/es/stats.svg" alt="Cifras clave"></p>
+
+<p align="center"><img src="docs/images/es/pipeline.svg" alt="Flujo: archivo → GnuPG → vídeo QR → canal → archivo"></p>
+
+<p align="center"><img src="docs/images/es/speed.svg" alt="Tiempo por código QR: original, tesis 2019, 2026"></p>
 
 ## Agradecimiento a Project Nayuki
 

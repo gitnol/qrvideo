@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 276" width="760" height="276" role="img" aria-label="211× schneller als das Original">
+<title>211× schneller als das Original</title>
+<style>
+text{font-family:'Segoe UI',system-ui,-apple-system,Helvetica,Arial,sans-serif;fill:#1f2937} .muted{fill:#6b7280} .accent{fill:#d97706} .box{fill:#f8fafc;stroke:#cbd5e1}
+.arrow{stroke:#94a3b8;fill:none} .tip{fill:#94a3b8}
+@media (prefers-color-scheme: dark){text{fill:#e5e7eb} .muted{fill:#9ca3af} .accent{fill:#fbbf24}
+.box{fill:#111827;stroke:#374151} .arrow{stroke:#6b7280} .tip{fill:#6b7280}}
+</style>
+<text x="16" y="34" font-size="22" font-weight="700">211× schneller als das Original</text>
+<text x="16" y="58" font-size="13" class="muted">Zeit pro QR-Code (Version 40) · kürzer ist besser · logarithmische Skala</text>
+<text x="16" y="103" font-size="14" >Original qrcodegen 1.8.0</text>
+<rect x="230" y="88" width="344.9" height="22" rx="4" fill="#94a3b8"/>
+<text x="582.939" y="104" font-size="13" font-weight="600">52,87 ms · 1×</text>
+<text x="16" y="143" font-size="14" >Thesis 2019</text>
+<rect x="230" y="128" width="192.6" height="22" rx="4" fill="#38bdf8"/>
+<text x="430.586" y="144" font-size="13" font-weight="600">3,31 ms · 16×</text>
+<text x="16" y="183" font-size="14" >2026 ohne Numba</text>
+<rect x="230" y="168" width="98.4" height="22" rx="4" fill="#14b8a6"/>
+<text x="336.392" y="184" font-size="13" font-weight="600">0,60 ms · 88×</text>
+<text x="16" y="223" font-size="14" >2026 mit Numba</text>
+<rect x="230" y="208" width="50.5" height="22" rx="4" fill="#f59e0b"/>
+<text x="288.504" y="224" font-size="13" font-weight="600">0,25 ms · 211×</text>
+<text x="16" y="262" font-size="11" class="muted">Messung: bench/results.json, 300 QR-Codes je Variante</text>
+</svg>

@@ -62,6 +62,8 @@ Revival_2026/
 │   └── poc/                     # POC.py, analyze_video.py, upload_video.py, _STARTE_POC.bat
 ├── tools/git-hooks/             # Interna-Hooks (pre-commit, commit-msg)
 ├── tools/i18n_catalog.py        # Kataloge extrahieren/abgleichen/kompilieren/prüfen (ADR-006, nur stdlib)
+├── tools/screenshots.py         # GUI-Screenshots je Sprache für die Anleitungen (I33j, Pillow ad hoc)
+├── tools/readme_graphics.py     # Logo + README-Grafiken als SVG aus bench/results.json (I35, nur stdlib)
 ├── docs/                        # Dieses Doku-Set
 ├── pyproject.toml, uv.lock
 └── (venv NICHT hier: UV_PROJECT_ENVIRONMENT=%LOCALAPPDATA%\venvs\revival_2026, NextCloud-Sync)

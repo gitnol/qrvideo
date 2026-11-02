@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/images/logo.svg" width="112" alt="QR code video channel: logo"></p>
+
 # Thesis Revival 2026
 
 *Deutsche Fassung: [README.md](README.md) · Versión en español: [README.es.md](README.es.md)*
@@ -16,6 +18,14 @@ encrypt files with GnuPG, encode them as a video of QR codes, transfer it via Yo
 | Thesis code from 2019 (unchanged) | `legacy/` |
 | User guide | [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) (German: [`docs/BEDIENUNGSANLEITUNG.md`](docs/BEDIENUNGSANLEITUNG.md), Spanish: [`docs/GUIA_DE_USUARIO.md`](docs/GUIA_DE_USUARIO.md)) |
 | Architecture, decisions (ADR), threat model (German) | [`docs/architecture/`](docs/architecture/), [`docs/security/`](docs/security/THREAT_MODEL.md) |
+
+## At a glance
+
+<p align="center"><img src="docs/images/en/stats.svg" alt="Key figures"></p>
+
+<p align="center"><img src="docs/images/en/pipeline.svg" alt="Flow: file → GnuPG → QR video → channel → file"></p>
+
+<p align="center"><img src="docs/images/en/speed.svg" alt="Time per QR code: original, thesis 2019, 2026"></p>
 
 ## Thanks to Project Nayuki
 

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 104" width="760" height="104" role="img" aria-label="File → GnuPG → QR video → Channel → File">
+<title>File → GnuPG → QR video → Channel → File</title>
+<style>
+text{font-family:'Segoe UI',system-ui,-apple-system,Helvetica,Arial,sans-serif;fill:#1f2937} .muted{fill:#6b7280} .accent{fill:#d97706} .box{fill:#f8fafc;stroke:#cbd5e1}
+.arrow{stroke:#94a3b8;fill:none} .tip{fill:#94a3b8}
+@media (prefers-color-scheme: dark){text{fill:#e5e7eb} .muted{fill:#9ca3af} .accent{fill:#fbbf24}
+.box{fill:#111827;stroke:#374151} .arrow{stroke:#6b7280} .tip{fill:#6b7280}}
+</style>
+<rect class="box" x="4" y="4" width="124" height="96" rx="12" stroke-width="1.5"/>
+<text x="66" y="40" font-size="16" font-weight="700" text-anchor="middle">File</text>
+<text x="66" y="64" font-size="11" class="muted" text-anchor="middle">any content</text>
+<text x="66" y="80" font-size="11" class="muted" text-anchor="middle"></text>
+<path class="arrow" d="M134 52 H148" stroke-width="2"/>
+<path class="tip" d="M150 52 l-7 -5 v10 z"/>
+<rect class="box" x="156" y="4" width="124" height="96" rx="12" stroke-width="1.5"/>
+<text x="218" y="40" font-size="16" font-weight="700" text-anchor="middle">GnuPG</text>
+<text x="218" y="64" font-size="11" class="muted" text-anchor="middle">encrypted</text>
+<text x="218" y="80" font-size="11" class="muted" text-anchor="middle">and signed</text>
+<path class="arrow" d="M286 52 H300" stroke-width="2"/>
+<path class="tip" d="M302 52 l-7 -5 v10 z"/>
+<rect class="box" x="308" y="4" width="124" height="96" rx="12" stroke-width="1.5"/>
+<text x="370" y="40" font-size="16" font-weight="700" text-anchor="middle">QR video</text>
+<text x="370" y="64" font-size="11" class="muted" text-anchor="middle">15 QR per frame</text>
+<text x="370" y="80" font-size="11" class="muted" text-anchor="middle">parity heals losses</text>
+<path class="arrow" d="M438 52 H452" stroke-width="2"/>
+<path class="tip" d="M454 52 l-7 -5 v10 z"/>
+<rect class="box" x="460" y="4" width="124" height="96" rx="12" stroke-width="1.5"/>
+<text x="522" y="40" font-size="16" font-weight="700" text-anchor="middle">Channel</text>
+<text x="522" y="64" font-size="11" class="muted" text-anchor="middle">YouTube or</text>
+<text x="522" y="80" font-size="11" class="muted" text-anchor="middle">shared folder</text>
+<path class="arrow" d="M590 52 H604" stroke-width="2"/>
+<path class="tip" d="M606 52 l-7 -5 v10 z"/>
+<rect class="box" x="612" y="4" width="124" height="96" rx="12" stroke-width="1.5"/>
+<text x="674" y="40" font-size="16" font-weight="700" text-anchor="middle">File</text>
+<text x="674" y="64" font-size="11" class="muted" text-anchor="middle">decrypted,</text>
+<text x="674" y="80" font-size="11" class="muted" text-anchor="middle">signature checked</text>
+</svg>
